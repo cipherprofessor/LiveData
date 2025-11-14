@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { prisma } from "../../../../db/prisma.js";
+import { prisma } from "../../../../db/prisma";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { env } from "../../../../config/env.js";
-import { audit } from "../../../../audit/logger.js";
-import { validate } from "../../../middleware/validate.js";
-import { loginSchema, registerSchema } from "../../../../schemas/auth.js";
+import { env } from "../../../../config/env";
+import { audit } from "../../../../audit/logger";
+import { validate } from "../../../middleware/validate";
+import { loginSchema, registerSchema } from "../../../../schemas/auth";
 
 export const router = Router();
 

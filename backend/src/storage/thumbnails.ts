@@ -1,5 +1,5 @@
 import sharp from "sharp";
-import { storage } from "./index.js";
+import { storage } from "./index";
 
 export async function generateImageThumbnail(params: { key: string; buffer: Buffer; maxWidth?: number; maxHeight?: number }): Promise<string> {
 	const { key, buffer, maxWidth = 256, maxHeight = 256 } = params;

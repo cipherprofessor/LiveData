@@ -1,12 +1,12 @@
 import { Router } from "express";
-import { prisma } from "../../../../db/prisma.js";
-import { authenticate, AuthenticatedRequest } from "../../../middleware/auth.js";
+import { prisma } from "../../../../db/prisma";
+import { authenticate, AuthenticatedRequest } from "../../../middleware/auth";
 import bcrypt from "bcrypt";
-import { audit } from "../../../../audit/logger.js";
-import { storage } from "../../../../storage/index.js";
-import { createSignedToken, verifySignedToken } from "../../../../security/signing.js";
-import { validate } from "../../../middleware/validate.js";
-import { createShareSchema, shareIdParamSchema, signedUrlSchema } from "../../../../schemas/shares.js";
+import { audit } from "../../../../audit/logger";
+import { storage } from "../../../../storage/index";
+import { createSignedToken, verifySignedToken } from "../../../../security/signing";
+import { validate } from "../../../middleware/validate";
+import { createShareSchema, shareIdParamSchema, signedUrlSchema } from "../../../../schemas/shares";
 
 export const router = Router();
 

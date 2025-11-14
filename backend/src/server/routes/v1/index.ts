@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { router as authRouter } from "./modules/auth.js";
-import { router as filesRouter } from "./modules/files.js";
-import { router as conversionsRouter } from "./modules/conversions.js";
-import { router as sharesRouter } from "./modules/shares.js";
+import { router as authRouter } from "./modules/auth";
+import { router as filesRouter } from "./modules/files";
+import { router as conversionsRouter } from "./modules/conversions";
+import { router as sharesRouter } from "./modules/shares";
 
 export const router = Router();
 

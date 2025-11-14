@@ -1,8 +1,8 @@
 import fs from "fs";
 import path from "path";
 import { Readable } from "stream";
-import { env } from "../config/env.js";
-import { storageDir } from "../config/storage.js";
+import { env } from "../config/env";
+import { storageDir } from "../config/storage";
 import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 
 export type StoredObjectRef = { key: string; location: "local" | "s3" };

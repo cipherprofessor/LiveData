@@ -3,10 +3,10 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import rateLimit from "express-rate-limit";
-import { router as healthRouter } from "./routes/health.js";
-import { router as apiV1Router } from "./routes/v1/index.js";
-import { ensureStorageDirs } from "../config/storage.js";
-import { router as sharesRouter } from "./routes/v1/modules/shares.js";
+import { router as healthRouter } from "./routes/health";
+import { router as apiV1Router } from "./routes/v1/index";
+import { ensureStorageDirs } from "../config/storage";
+import { router as sharesRouter } from "./routes/v1/modules/shares";
 
 const app = express();
 

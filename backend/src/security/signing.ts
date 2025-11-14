@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import { env } from "../config/env.js";
+import { env } from "../config/env";
 
 function base64url(input: Buffer | string): string {
 	const buf = Buffer.isBuffer(input) ? input : Buffer.from(input);

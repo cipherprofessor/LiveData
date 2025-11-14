@@ -1,4 +1,4 @@
-import { prisma } from "../db/prisma.js";
+import { prisma } from "../db/prisma";
 import { Request } from "express";
 
 export async function audit(req: Request, entry: {

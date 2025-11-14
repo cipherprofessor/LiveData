@@ -88,6 +88,11 @@ class ApiService {
     return response.data;
   }
 
+  async getStorageStats() {
+    const response = await this.client.get('/files/stats');
+    return response.data as { storageUsed: number; storageQuota: number; fileCount: number };
+  }
+
   async getFile(fileId: string) {
     const response = await this.client.get(`/files/${fileId}`);
     return response.data;

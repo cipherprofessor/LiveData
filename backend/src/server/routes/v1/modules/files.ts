@@ -66,6 +66,37 @@ router.get("/", authenticate, async (req: AuthenticatedRequest, res) => {
 	return res.json({ files });
 });
 
+router.get("/stats", authenticate, async (req: AuthenticatedRequest, res) => {
+	if (!req.user) return res.status(401).json({ message: "unauthorized" });
+
+	// Get user's storage quota
+	const user = await prisma.user.findUnique({
+		where: { userId: req.user.userId },
+		select: { storageQuota: true, storageUsed: true },
+	});
+
+	if (!user) return res.status(404).json({ message: "user not found" });
+
+	// Get file count
+	const fileCount = await prisma.file.count({
+		where: { userId: req.user.userId, isDeleted: false },
+	});
+
+	// Get total storage used (sum of all file sizes)
+	const files = await prisma.file.findMany({
+		where: { userId: req.user.userId, isDeleted: false },
+		select: { fileSize: true },
+	});
+
+	const totalUsed = files.reduce((sum, file) => sum + Number(file.fileSize), 0);
+
+	return res.json({
+		storageUsed: totalUsed,
+		storageQuota: Number(user.storageQuota),
+		fileCount,
+	});
+});
+
 router.get("/:fileId/thumbnail", authenticate, validate(fileIdParamSchema), async (req: AuthenticatedRequest, res) => {
 	if (!req.user) return res.status(401).json({ message: "unauthorized" });
 	const file = await prisma.file.findFirst({ where: { fileId: req.params.fileId, userId: req.user.userId, isDeleted: false } });

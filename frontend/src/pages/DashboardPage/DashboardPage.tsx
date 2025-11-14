@@ -12,6 +12,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../..
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { ThemeToggle } from '../../components/ui/ThemeToggle';
+import { StorageQuota } from '../../components/ui/StorageQuota';
 import { useToast } from '../../components/ui/Toast';
 import { apiService, handleApiError } from '../../services/api.service';
 import { formatFileSize, formatDate } from '../../lib/utils';
@@ -22,6 +23,12 @@ interface DashboardPageProps {
   onLogout: () => void;
 }
 
+interface StorageStats {
+  storageUsed: number;
+  storageQuota: number;
+  fileCount: number;
+}
+
 export const DashboardPage = ({ onLogout }: DashboardPageProps) => {
   const { success, error: showError, info } = useToast();
   const [files, setFiles] = useState<File[]>([]);
@@ -29,6 +36,7 @@ export const DashboardPage = ({ onLogout }: DashboardPageProps) => {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
+  const [storageStats, setStorageStats] = useState<StorageStats | null>(null);
 
   const fetchFiles = async () => {
     setLoading(true);
@@ -42,8 +50,18 @@ export const DashboardPage = ({ onLogout }: DashboardPageProps) => {
     }
   };
 
+  const fetchStorageStats = async () => {
+    try {
+      const stats = await apiService.getStorageStats();
+      setStorageStats(stats);
+    } catch (err) {
+      console.error('Failed to fetch storage stats:', err);
+    }
+  };
+
   useEffect(() => {
     fetchFiles();
+    fetchStorageStats();
   }, []);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,6 +77,7 @@ export const DashboardPage = ({ onLogout }: DashboardPageProps) => {
         setUploadProgress(progress);
       });
       await fetchFiles();
+      await fetchStorageStats(); // Refresh storage stats after upload
       setUploadProgress(0);
       success(`${file.name} uploaded successfully!`);
     } catch (err) {
@@ -75,6 +94,7 @@ export const DashboardPage = ({ onLogout }: DashboardPageProps) => {
     try {
       await apiService.deleteFile(fileId);
       await fetchFiles();
+      await fetchStorageStats(); // Refresh storage stats after delete
       success(`${fileName} deleted successfully!`);
     } catch (err) {
       showError(handleApiError(err));
@@ -176,6 +196,16 @@ export const DashboardPage = ({ onLogout }: DashboardPageProps) => {
               </label>
             </div>
           </div>
+
+          {storageStats && (
+            <div style={{ marginBottom: '24px' }}>
+              <StorageQuota
+                used={storageStats.storageUsed}
+                total={storageStats.storageQuota}
+                fileCount={storageStats.fileCount}
+              />
+            </div>
+          )}
 
           {loading && files.length === 0 ? (
             <div className={styles.loading}>

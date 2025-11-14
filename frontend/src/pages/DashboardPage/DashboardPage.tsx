@@ -12,6 +12,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../..
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { ThemeToggle } from '../../components/ui/ThemeToggle';
+import { useToast } from '../../components/ui/Toast';
 import { apiService, handleApiError } from '../../services/api.service';
 import { formatFileSize, formatDate } from '../../lib/utils';
 import type { File } from '../../types';
@@ -22,21 +23,20 @@ interface DashboardPageProps {
 }
 
 export const DashboardPage = ({ onLogout }: DashboardPageProps) => {
+  const { success, error: showError, info } = useToast();
   const [files, setFiles] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
-  const [error, setError] = useState('');
 
   const fetchFiles = async () => {
     setLoading(true);
-    setError('');
     try {
       const data = await apiService.getFiles();
       setFiles(data.files || data || []);
     } catch (err) {
-      setError(handleApiError(err));
+      showError(handleApiError(err));
     } finally {
       setLoading(false);
     }
@@ -52,7 +52,7 @@ export const DashboardPage = ({ onLogout }: DashboardPageProps) => {
 
     setUploading(true);
     setUploadProgress(0);
-    setError('');
+    info(`Uploading ${file.name}...`);
 
     try {
       await apiService.uploadFile(file, (progress) => {
@@ -60,22 +60,24 @@ export const DashboardPage = ({ onLogout }: DashboardPageProps) => {
       });
       await fetchFiles();
       setUploadProgress(0);
+      success(`${file.name} uploaded successfully!`);
     } catch (err) {
-      setError(handleApiError(err));
+      showError(handleApiError(err));
     } finally {
       setUploading(false);
       e.target.value = '';
     }
   };
 
-  const handleDelete = async (fileId: string) => {
-    if (!confirm('Are you sure you want to delete this file?')) return;
+  const handleDelete = async (fileId: string, fileName: string) => {
+    if (!confirm(`Are you sure you want to delete "${fileName}"?`)) return;
 
     try {
       await apiService.deleteFile(fileId);
       await fetchFiles();
+      success(`${fileName} deleted successfully!`);
     } catch (err) {
-      setError(handleApiError(err));
+      showError(handleApiError(err));
     }
   };
 
@@ -88,6 +90,7 @@ export const DashboardPage = ({ onLogout }: DashboardPageProps) => {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+    info(`Downloading ${fileName}...`);
   };
 
   const filteredFiles = files.filter((file) =>
@@ -174,12 +177,6 @@ export const DashboardPage = ({ onLogout }: DashboardPageProps) => {
             </div>
           </div>
 
-          {error && (
-            <div className={styles.error}>
-              {error}
-            </div>
-          )}
-
           {loading && files.length === 0 ? (
             <div className={styles.loading}>
               <RefreshCw className={styles.spinner} size={32} />
@@ -221,7 +218,7 @@ export const DashboardPage = ({ onLogout }: DashboardPageProps) => {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => handleDelete(file.fileId)}
+                        onClick={() => handleDelete(file.fileId, file.fileName)}
                         leftIcon={<Trash2 size={14} />}
                       >
                         Delete

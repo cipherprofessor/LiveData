@@ -34,12 +34,24 @@
 
   /* State Colors */
   --success: 142 71% 45%;              /* #10b981 (Green) */
+  --success-h: 142;
+  --success-s: 71%;
+  --success-l: 45%;
   --success-foreground: 213 31% 91%;   /* #f1f5f9 (Light Text) */
   --warning: 45 93% 47%;               /* #f59e0b (Amber) */
+  --warning-h: 45;
+  --warning-s: 93%;
+  --warning-l: 47%;
   --warning-foreground: 213 31% 91%;   /* #f1f5f9 (Light Text) */
   --destructive: 0 84% 60%;            /* #ef4444 (Red) */
+  --destructive-h: 0;
+  --destructive-s: 84%;
+  --destructive-l: 60%;
   --destructive-foreground: 213 31% 91%; /* #f1f5f9 (Light Text) */
   --info: 214 95% 65%;                 /* #60a5fa (Blue) */
+  --info-h: 214;
+  --info-s: 95%;
+  --info-l: 65%;
   --info-foreground: 213 31% 91%;      /* #f1f5f9 (Light Text) */
 
   /* Glass Morphism */
@@ -54,6 +66,11 @@
   --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
   --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Transition Shortcuts */
+  --transition-base: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-spring: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
   /* Spacing */
   --radius: 0.75rem;
@@ -289,9 +306,13 @@ body {
   animation: scaleIn 0.4s var(--ease-spring) both;
 }
 
+.animate-slide-in-right {
+  animation: slideInFromRight 0.4s var(--ease-spring) both;
+}
+
 /* Stagger delays */
-.stagger-1 { animation-delay: 0.1s; }
-.stagger-2 { animation-delay: 0.2s; }
-.stagger-3 { animation-delay: 0.3s; }
-.stagger-4 { animation-delay: 0.4s; }
-.stagger-5 { animation-delay: 0.5s; }
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.1s; }
+.stagger-3 { animation-delay: 0.15s; }
+.stagger-4 { animation-delay: 0.2s; }
+.stagger-5 { animation-delay: 0.25s; }

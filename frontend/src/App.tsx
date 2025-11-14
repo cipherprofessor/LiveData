@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { ToastProvider, ToastContainer } from './components/ui/Toast';
 import { AuthPage } from './pages/AuthPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { apiService } from './services/api.service';
@@ -49,6 +50,7 @@ function AppContent() {
       ) : (
         <DashboardPage onLogout={handleLogout} />
       )}
+      <ToastContainer />
     </>
   );
 }
@@ -56,7 +58,9 @@ function AppContent() {
 function App() {
   return (
     <ThemeProvider defaultTheme="system">
-      <AppContent />
+      <ToastProvider>
+        <AppContent />
+      </ToastProvider>
     </ThemeProvider>
   );
 }

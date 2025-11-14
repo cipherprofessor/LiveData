@@ -39,7 +39,7 @@ model File {
   storagePath   String   @map("storage_path")
   isPasswordProtected Boolean @default(false) @map("is_password_protected")
   passwordHash  String?  @map("password_hash")
-  tags          String[] @db.Text[]
+  tags          String[] @default([])
   thumbnailKey  String?  @map("thumbnail_key")
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")

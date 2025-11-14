@@ -5,7 +5,8 @@
 
 import axios, { AxiosInstance, AxiosError } from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api/v1';
+// Use relative path to leverage Vite proxy during development
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api/v1';
 
 class ApiService {
   private client: AxiosInstance;

@@ -1,0 +1,133 @@
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: hsl(var(--card));
+  backdrop-filter: blur(12px);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+  border: 1px solid hsl(var(--border));
+  min-width: 320px;
+  max-width: 400px;
+  transition: all var(--transition-spring);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  transition: transform var(--transition-spring);
+
+  svg {
+    color: currentColor;
+  }
+}
+
+.message {
+  flex: 1;
+  font-size: 14px;
+  line-height: 1.5;
+  color: hsl(var(--foreground));
+  font-weight: 500;
+}
+
+.closeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  color: hsl(var(--muted-foreground));
+  cursor: pointer;
+  transition: all var(--transition-base);
+
+  &:hover {
+    background: hsl(var(--accent));
+    color: hsl(var(--accent-foreground));
+  }
+
+  &:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+}
+
+// Toast variants
+.success {
+  border-left: 4px solid hsl(var(--success));
+
+  .icon {
+    background: hsla(var(--success-h), var(--success-s), var(--success-l), 0.15);
+    color: hsl(var(--success));
+  }
+}
+
+.error {
+  border-left: 4px solid hsl(var(--destructive));
+
+  .icon {
+    background: hsla(var(--destructive-h), var(--destructive-s), var(--destructive-l), 0.15);
+    color: hsl(var(--destructive));
+  }
+}
+
+.warning {
+  border-left: 4px solid hsl(var(--warning));
+
+  .icon {
+    background: hsla(var(--warning-h), var(--warning-s), var(--warning-l), 0.15);
+    color: hsl(var(--warning));
+  }
+}
+
+.info {
+  border-left: 4px solid hsl(var(--info));
+
+  .icon {
+    background: hsla(var(--info-h), var(--info-s), var(--info-l), 0.15);
+    color: hsl(var(--info));
+  }
+}
+
+// Animations
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    &:hover {
+      transform: none;
+    }
+  }
+
+  .icon {
+    transition: none;
+  }
+}

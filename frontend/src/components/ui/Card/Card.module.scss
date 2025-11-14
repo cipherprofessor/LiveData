@@ -1,0 +1,142 @@
+.card {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: all var(--animation-normal) var(--ease-spring);
+  animation: fadeIn 0.4s var(--ease-smooth) both;
+}
+
+.backgroundGlow {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg,
+      hsl(var(--primary) / 0.05),
+      hsl(var(--accent) / 0.02));
+  opacity: 0;
+  transition: opacity var(--animation-normal) ease;
+}
+
+.hoverGlow {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg,
+      hsl(var(--primary) / 0.1),
+      hsl(var(--accent) / 0.05));
+  opacity: 0;
+  transition: opacity var(--animation-normal) ease;
+  border-radius: inherit;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+}
+
+/* ====================================
+   Variant Styles
+   ==================================== */
+
+.default {
+  background: linear-gradient(135deg,
+      hsl(var(--card)) 0%,
+      hsl(var(--card-alt)) 100%);
+  border: 1px solid hsl(var(--border));
+  color: hsl(var(--foreground));
+}
+
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+
+  :root & {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+
+  :global(.dark) & {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+}
+
+.outline {
+  background: hsl(var(--background));
+  border: 2px solid hsl(var(--border));
+  color: hsl(var(--foreground));
+}
+
+/* ====================================
+   Hover Effects
+   ==================================== */
+
+.hover {
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-4px);
+    border-color: hsl(var(--border-hover));
+    box-shadow: 0 12px 30px hsl(var(--primary) / 0.15);
+
+    .hoverGlow {
+      opacity: 1;
+    }
+
+    .backgroundGlow {
+      opacity: 1;
+    }
+  }
+
+  :global(.dark) &:hover {
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* ====================================
+   Card Sub-components
+   ==================================== */
+
+.header {
+  padding: 1.5rem 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.75rem;
+  color: hsl(var(--foreground));
+  margin: 0;
+}
+
+.description {
+  font-size: 0.875rem;
+  color: hsl(var(--muted-foreground));
+  margin: 0;
+  line-height: 1.5;
+}
+
+.cardContent {
+  padding: 0 1.5rem 1.5rem;
+}
+
+.footer {
+  padding: 1rem 1.5rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* ====================================
+   Accessibility
+   ==================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    animation: none;
+    transition: none;
+  }
+}

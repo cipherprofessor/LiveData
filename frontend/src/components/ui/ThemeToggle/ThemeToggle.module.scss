@@ -1,0 +1,9 @@
+.toggle {
+  svg {
+    transition: transform var(--animation-normal) var(--ease-spring);
+  }
+
+  &:hover svg {
+    transform: rotate(20deg);
+  }
+}

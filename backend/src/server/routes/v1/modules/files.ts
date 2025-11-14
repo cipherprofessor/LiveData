@@ -1,15 +1,15 @@
 import { Router } from "express";
 import multer from "multer";
-import { prisma } from "../../../../db/prisma.js";
-import { authenticate, AuthenticatedRequest } from "../../../middleware/auth.js";
+import { prisma } from "../../../../db/prisma";
+import { authenticate, AuthenticatedRequest } from "../../../middleware/auth";
 import { v4 as uuidv4 } from "uuid";
 import mime from "mime-types";
-import { storage } from "../../../../storage/index.js";
-import { audit } from "../../../../audit/logger.js";
+import { storage } from "../../../../storage/index";
+import { audit } from "../../../../audit/logger";
 import bcrypt from "bcrypt";
-import { generateImageThumbnail } from "../../../../storage/thumbnails.js";
-import { validate } from "../../../middleware/validate.js";
-import { fileIdParamSchema, filePasswordSetSchema, searchSchema, tagsSchema, updateFileSchema } from "../../../../schemas/files.js";
+import { generateImageThumbnail } from "../../../../storage/thumbnails";
+import { validate } from "../../../middleware/validate";
+import { fileIdParamSchema, filePasswordSetSchema, searchSchema, tagsSchema, updateFileSchema } from "../../../../schemas/files";
 
 export const router = Router();
 

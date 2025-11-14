@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { authenticate, AuthenticatedRequest } from "../../../middleware/auth.js";
-import { prisma } from "../../../../db/prisma.js";
-import { createConversionProvider } from "../../../../conversion/provider.js";
-import { storage } from "../../../../storage/index.js";
-import { env } from "../../../../config/env.js";
-import { validate } from "../../../middleware/validate.js";
-import { conversionIdParamSchema, requestConversionSchema } from "../../../../schemas/conversions.js";
+import { authenticate, AuthenticatedRequest } from "../../../middleware/auth";
+import { prisma } from "../../../../db/prisma";
+import { createConversionProvider } from "../../../../conversion/provider";
+import { storage } from "../../../../storage/index";
+import { env } from "../../../../config/env";
+import { validate } from "../../../middleware/validate";
+import { conversionIdParamSchema, requestConversionSchema } from "../../../../schemas/conversions";
 
 const provider = createConversionProvider();
 export const router = Router();

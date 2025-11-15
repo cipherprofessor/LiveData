@@ -1,4 +1,4 @@
-# SkillSwap India 🔄
+# tej India 🔄
 
 ## India's First Peer-to-Peer Skill Exchange Platform
 
@@ -6,7 +6,7 @@
 
 ### 🌟 Project Overview
 
-SkillSwap India is a revolutionary peer-to-peer skill exchange platform that enables users to trade skills instead of money. You teach what you know, learn what you need - Zero rupees spent!
+tej India is a revolutionary peer-to-peer skill exchange platform that enables users to trade skills instead of money. You teach what you know, learn what you need - Zero rupees spent!
 
 ### 🎯 The Problem
 
@@ -473,7 +473,7 @@ Users charge ₹200-500/hour, platform takes 20%
 - Priya: 100+ SkillCoins
 - Learned 8 skills, made 12 friends
 - Redeems ₹500 Amazon voucher
-- Gets job offer (mentioned SkillSwap in interview!)
+- Gets job offer (mentioned tej in interview!)
 
 **Result: ₹0 spent, ₹2 Lakhs+ value gained! 🚀**
 
@@ -501,7 +501,7 @@ Users charge ₹200-500/hour, platform takes 20%
 ### Phase 1: College Blitzkrieg (Month 1-3)
 - Target 10 colleges in Bangalore
 - 50 student ambassadors
-- Campus events: "SkillSwap Weekend"
+- Campus events: "tej Weekend"
 - **Goal: 10,000 users, 500 swaps**
 
 ### Phase 2: City Domination (Month 4-9)
@@ -590,16 +590,16 @@ docker-compose up -d
 
 ## 📞 Contact & Support
 
-- **Email**: support@skillswapindia.com
-- **Website**: https://skillswapindia.com
-- **Instagram**: @skillswapindia
-- **LinkedIn**: /company/skillswap-india
+- **Email**: support@tejindia.com
+- **Website**: https://tejindia.com
+- **Instagram**: @tejindia
+- **LinkedIn**: /company/tej-india
 
 ---
 
 ## 📝 License
 
-Proprietary - SkillSwap India © 2024
+Proprietary - tej India © 2024
 
 ---
 

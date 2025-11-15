@@ -57,8 +57,7 @@ router.get('/', async (req, res, next) => {
         category: true,
         _count: {
           select: {
-            teachers: true,
-            learners: true,
+            userSkills: true,
           },
         },
       },
@@ -78,8 +77,7 @@ router.get('/', async (req, res, next) => {
           description: skill.description,
           category: skill.category,
           icon: skill.icon,
-          teachersCount: skill._count.teachers,
-          learnersCount: skill._count.learners,
+          userSkillsCount: skill._count.userSkills,
         })),
         pagination: {
           total,

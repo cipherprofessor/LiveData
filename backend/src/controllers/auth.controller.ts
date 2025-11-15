@@ -19,12 +19,14 @@ interface JWTPayload {
 
 // Helper to generate tokens
 const generateTokens = (userId: string, email: string, role: string) => {
+  // @ts-ignore - Known typing issue with jsonwebtoken
   const accessToken = jwt.sign(
     { userId, email, role },
     process.env.JWT_SECRET!,
     { expiresIn: process.env.JWT_EXPIRES_IN || '15m' }
   );
 
+  // @ts-ignore - Known typing issue with jsonwebtoken
   const refreshToken = jwt.sign(
     { userId, email, role },
     process.env.JWT_REFRESH_SECRET!,
@@ -349,6 +351,7 @@ router.post('/refresh', async (req, res, next) => {
     }
 
     // Generate new access token
+    // @ts-ignore - Known typing issue with jsonwebtoken
     const accessToken = jwt.sign(
       { userId: user.userId, email: user.email, role: user.role },
       process.env.JWT_SECRET!,

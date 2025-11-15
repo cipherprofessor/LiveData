@@ -1,5 +1,5 @@
 {
-  "name": "skillswap-frontend",
+  "name": "live-data-frontend",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -24,6 +24,5 @@
     "sass-embedded": "^1.93.3",
     "typescript": "^5.4.5",
     "vite": "^5.4.8"
-  },
-  "description": "SkillSwap India - Frontend application"
+  }
 }

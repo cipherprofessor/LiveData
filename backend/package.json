@@ -1,5 +1,5 @@
 {
-  "name": "live-data-backend",
+  "name": "skillswap-backend",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -52,5 +52,6 @@
     "prisma": "^6.19.0",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.4.5"
-  }
+  },
+  "description": "SkillSwap India - Peer-to-peer skill exchange platform API"
 }

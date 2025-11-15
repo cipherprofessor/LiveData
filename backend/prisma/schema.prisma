@@ -1,3 +1,5 @@
+// SkillSwap India - Database Schema
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,102 +10,479 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+// ============================================
+// USER MANAGEMENT
+// ============================================
+
 model User {
-  userId        String   @id @default(uuid()) @map("user_id")
-  email         String   @unique
-  passwordHash  String   @map("password_hash")
-  firstName     String?  @map("first_name")
-  lastName      String?  @map("last_name")
-  mfaEnabled    Boolean  @default(false) @map("mfa_enabled")
-  storageQuota  BigInt   @default(5368709120) @map("storage_quota") // 5GB
-  storageUsed   BigInt   @default(0) @map("storage_used")
-  createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @updatedAt @map("updated_at")
-  lastLogin     DateTime? @map("last_login")
-  isActive      Boolean  @default(true) @map("is_active")
+  userId            String    @id @default(uuid()) @map("user_id")
+  email             String    @unique
+  passwordHash      String    @map("password_hash")
 
-  files         File[]
-  auditLogs     AuditLog[]
-  shares        Share[]
-  conversions   Conversion[]
+  // Profile
+  firstName         String    @map("first_name")
+  lastName          String?   @map("last_name")
+  bio               String?   @db.Text
+  profilePicture    String?   @map("profile_picture")
+  dateOfBirth       DateTime? @map("date_of_birth")
+  gender            Gender?
 
+  // Location
+  city              String
+  state             String
+  country           String    @default("India")
+  latitude          Float?
+  longitude         Float?
+
+  // Contact
+  phoneNumber       String?   @unique @map("phone_number")
+  phoneVerified     Boolean   @default(false) @map("phone_verified")
+  emailVerified     Boolean   @default(false) @map("email_verified")
+
+  // Gamification
+  skillCoins        Int       @default(0) @map("skill_coins")
+  experiencePoints  Int       @default(0) @map("experience_points")
+  level             Int       @default(1)
+  streak            Int       @default(0)
+  totalSwaps        Int       @default(0) @map("total_swaps")
+  completedSwaps    Int       @default(0) @map("completed_swaps")
+  totalHoursTaught  Int       @default(0) @map("total_hours_taught")
+  totalHoursLearned Int       @default(0) @map("total_hours_learned")
+
+  // Ratings
+  rating            Float     @default(0) @db.Real
+  totalReviews      Int       @default(0) @map("total_reviews")
+
+  // Account Status
+  isActive          Boolean   @default(true) @map("is_active")
+  isPremium         Boolean   @default(false) @map("is_premium")
+  premiumUntil      DateTime? @map("premium_until")
+  lastActive        DateTime  @default(now()) @map("last_active")
+
+  // Metadata
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  userSkills        UserSkill[]
+  swapsAsUser1      Swap[]            @relation("User1Swaps")
+  swapsAsUser2      Swap[]            @relation("User2Swaps")
+  reviewsGiven      Review[]          @relation("ReviewsGiven")
+  reviewsReceived   Review[]          @relation("ReviewsReceived")
+  badges            UserBadge[]
+  connections       Connection[]      @relation("UserConnections")
+  connectionsReceived Connection[]    @relation("ConnectedUser")
+  messagesSent      Message[]         @relation("MessageSender")
+  messagesReceived  Message[]         @relation("MessageReceiver")
+  notifications     Notification[]
+  auditLogs         AuditLog[]
+
+  @@index([email])
+  @@index([city, state])
+  @@index([isActive])
+  @@index([createdAt])
   @@map("users")
 }
 
-model File {
-  fileId        String   @id @default(uuid()) @map("file_id")
-  userId        String   @map("user_id")
-  user          User     @relation(fields: [userId], references: [userId])
-  fileName      String   @map("file_name")
-  fileSize      BigInt   @map("file_size")
-  mimeType      String   @map("mime_type")
-  storagePath   String   @map("storage_path")
-  isPasswordProtected Boolean @default(false) @map("is_password_protected")
-  passwordHash  String?  @map("password_hash")
-  tags          String[] @default([])
-  thumbnailKey  String?  @map("thumbnail_key")
+enum Gender {
+  MALE
+  FEMALE
+  NON_BINARY
+  PREFER_NOT_TO_SAY
+}
+
+// ============================================
+// SKILLS MANAGEMENT
+// ============================================
+
+model Skill {
+  skillId       String         @id @default(uuid()) @map("skill_id")
+  name          String         @unique
+  slug          String         @unique
+  description   String?        @db.Text
+  category      SkillCategory  @relation(fields: [categoryId], references: [categoryId])
+  categoryId    String         @map("category_id")
+  icon          String?
+  popularity    Int            @default(0)
+  isActive      Boolean        @default(true) @map("is_active")
+  createdAt     DateTime       @default(now()) @map("created_at")
+
+  userSkills    UserSkill[]
+
+  @@index([categoryId])
+  @@index([popularity])
+  @@map("skills")
+}
+
+model SkillCategory {
+  categoryId  String   @id @default(uuid()) @map("category_id")
+  name        String   @unique
+  slug        String   @unique
+  description String?  @db.Text
+  icon        String?
+  color       String?
+  order       Int      @default(0)
+  isActive    Boolean  @default(true) @map("is_active")
+
+  skills      Skill[]
+
+  @@map("skill_categories")
+}
+
+model UserSkill {
+  userSkillId      String            @id @default(uuid()) @map("user_skill_id")
+  user             User              @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  userId           String            @map("user_id")
+  skill            Skill             @relation(fields: [skillId], references: [skillId])
+  skillId          String            @map("skill_id")
+
+  // Skill Details
+  proficiencyLevel ProficiencyLevel  @map("proficiency_level")
+  yearsOfExperience Int              @default(0) @map("years_of_experience")
+  canTeach         Boolean           @default(false) @map("can_teach")
+  wantsToLearn     Boolean           @default(false) @map("wants_to_learn")
+
+  // Verification
+  isVerified       Boolean           @default(false) @map("is_verified")
+  verifiedAt       DateTime?         @map("verified_at")
+
+  // Teaching Stats
+  timesTaught      Int               @default(0) @map("times_taught")
+  averageRating    Float             @default(0) @map("average_rating") @db.Real
+
+  createdAt        DateTime          @default(now()) @map("created_at")
+  updatedAt        DateTime          @updatedAt @map("updated_at")
+
+  @@unique([userId, skillId])
+  @@index([userId])
+  @@index([skillId])
+  @@index([canTeach])
+  @@index([wantsToLearn])
+  @@map("user_skills")
+}
+
+enum ProficiencyLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
+}
+
+// ============================================
+// SKILL SWAPS
+// ============================================
+
+model Swap {
+  swapId            String      @id @default(uuid()) @map("swap_id")
+
+  // Participants
+  user1             User        @relation("User1Swaps", fields: [user1Id], references: [userId])
+  user1Id           String      @map("user1_id")
+  user2             User        @relation("User2Swaps", fields: [user2Id], references: [userId])
+  user2Id           String      @map("user2_id")
+
+  // Skills Being Exchanged
+  user1TeachSkill   String      @map("user1_teach_skill")
+  user1LearnSkill   String      @map("user1_learn_skill")
+  user2TeachSkill   String      @map("user2_teach_skill")
+  user2LearnSkill   String      @map("user2_learn_skill")
+
+  // Swap Details
+  description       String?     @db.Text
+  learningGoals     String?     @map("learning_goals") @db.Text
+
+  // Schedule
+  startDate         DateTime    @map("start_date")
+  endDate           DateTime?   @map("end_date")
+  sessionsPlanned   Int         @default(4) @map("sessions_planned")
+  hoursPerSession   Int         @default(2) @map("hours_per_session")
+
+  // Meeting Details
+  meetingType       MeetingType @map("meeting_type")
+  meetingLocation   String?     @map("meeting_location")
+  meetingLink       String?     @map("meeting_link")
+
+  // Status
+  status            SwapStatus  @default(PENDING)
+  statusReason      String?     @map("status_reason")
+
+  // Progress Tracking
+  sessionsCompleted Int         @default(0) @map("sessions_completed")
+  user1Progress     Int         @default(0) @map("user1_progress")
+  user2Progress     Int         @default(0) @map("user2_progress")
+
+  // Completion
+  completedAt       DateTime?   @map("completed_at")
+  user1Rating       Int?        @map("user1_rating")
+  user2Rating       Int?        @map("user2_rating")
+
+  // Metadata
+  createdAt         DateTime    @default(now()) @map("created_at")
+  updatedAt         DateTime    @updatedAt @map("updated_at")
+
+  // Relations
+  sessions          SwapSession[]
+  reviews           Review[]
+  messages          Message[]
+
+  @@index([user1Id])
+  @@index([user2Id])
+  @@index([status])
+  @@index([createdAt])
+  @@map("swaps")
+}
+
+enum SwapStatus {
+  PENDING
+  ACCEPTED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  DISPUTED
+}
+
+enum MeetingType {
+  ONLINE
+  OFFLINE
+  HYBRID
+}
+
+model SwapSession {
+  sessionId     String       @id @default(uuid()) @map("session_id")
+  swap          Swap         @relation(fields: [swapId], references: [swapId], onDelete: Cascade)
+  swapId        String       @map("swap_id")
+
+  sessionNumber Int          @map("session_number")
+  scheduledFor  DateTime     @map("scheduled_for")
+  duration      Int
+
+  // Attendance
+  user1Attended Boolean      @default(false) @map("user1_attended")
+  user2Attended Boolean      @default(false) @map("user2_attended")
+
+  // Session Notes
+  user1Notes    String?      @map("user1_notes") @db.Text
+  user2Notes    String?      @map("user2_notes") @db.Text
+
+  completedAt   DateTime?    @map("completed_at")
+  createdAt     DateTime     @default(now()) @map("created_at")
+
+  @@index([swapId])
+  @@index([scheduledFor])
+  @@map("swap_sessions")
+}
+
+// ============================================
+// REVIEWS & RATINGS
+// ============================================
+
+model Review {
+  reviewId      String   @id @default(uuid()) @map("review_id")
+
+  reviewer      User     @relation("ReviewsGiven", fields: [reviewerId], references: [userId])
+  reviewerId    String   @map("reviewer_id")
+  reviewee      User     @relation("ReviewsReceived", fields: [revieweeId], references: [userId])
+  revieweeId    String   @map("reviewee_id")
+
+  swap          Swap     @relation(fields: [swapId], references: [swapId])
+  swapId        String   @map("swap_id")
+
+  rating        Int
+  comment       String?  @db.Text
+  tags          String[]
+
+  isPublic      Boolean  @default(true) @map("is_public")
+
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
-  deletedAt     DateTime? @map("deleted_at")
-  isDeleted     Boolean  @default(false) @map("is_deleted")
 
-  shares        Share[]
-  conversions   Conversion[]
+  @@unique([swapId, reviewerId])
+  @@index([revieweeId])
+  @@index([rating])
+  @@map("reviews")
+}
+
+// ============================================
+// CONNECTIONS & NETWORKING
+// ============================================
+
+model Connection {
+  connectionId  String           @id @default(uuid()) @map("connection_id")
+
+  user          User             @relation("UserConnections", fields: [userId], references: [userId], onDelete: Cascade)
+  userId        String           @map("user_id")
+
+  connectedUser User             @relation("ConnectedUser", fields: [connectedUserId], references: [userId], onDelete: Cascade)
+  connectedUserId String         @map("connected_user_id")
+
+  status        ConnectionStatus @default(PENDING)
+  message       String?          @db.Text
+
+  createdAt     DateTime         @default(now()) @map("created_at")
+  acceptedAt    DateTime?        @map("accepted_at")
+
+  @@unique([userId, connectedUserId])
+  @@index([userId])
+  @@index([connectedUserId])
+  @@map("connections")
+}
+
+enum ConnectionStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  BLOCKED
+}
+
+// ============================================
+// MESSAGING
+// ============================================
+
+model Message {
+  messageId     String      @id @default(uuid()) @map("message_id")
+
+  sender        User        @relation("MessageSender", fields: [senderId], references: [userId])
+  senderId      String      @map("sender_id")
+
+  receiver      User        @relation("MessageReceiver", fields: [receiverId], references: [userId])
+  receiverId    String      @map("receiver_id")
+
+  swap          Swap?       @relation(fields: [swapId], references: [swapId])
+  swapId        String?     @map("swap_id")
+
+  content       String      @db.Text
+
+  isRead        Boolean     @default(false) @map("is_read")
+  readAt        DateTime?   @map("read_at")
+
+  createdAt     DateTime    @default(now()) @map("created_at")
+
+  @@index([senderId])
+  @@index([receiverId])
+  @@index([swapId])
+  @@index([createdAt])
+  @@map("messages")
+}
+
+// ============================================
+// GAMIFICATION
+// ============================================
+
+model Badge {
+  badgeId       String      @id @default(uuid()) @map("badge_id")
+  name          String      @unique
+  slug          String      @unique
+  description   String      @db.Text
+  icon          String
+  category      BadgeCategory
+
+  requirement   String      @db.Text
+  rarity        BadgeRarity
+  skillCoins    Int         @default(0) @map("skill_coins")
+
+  isActive      Boolean     @default(true) @map("is_active")
+  createdAt     DateTime    @default(now()) @map("created_at")
+
+  userBadges    UserBadge[]
+
+  @@map("badges")
+}
+
+enum BadgeCategory {
+  TEACHING
+  LEARNING
+  COMMUNITY
+  ACHIEVEMENT
+  SPECIAL
+}
+
+enum BadgeRarity {
+  COMMON
+  RARE
+  EPIC
+  LEGENDARY
+}
+
+model UserBadge {
+  userBadgeId   String   @id @default(uuid()) @map("user_badge_id")
+
+  user          User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  userId        String   @map("user_id")
+
+  badge         Badge    @relation(fields: [badgeId], references: [badgeId])
+  badgeId       String   @map("badge_id")
+
+  earnedAt      DateTime @default(now()) @map("earned_at")
+  progress      Int      @default(100)
+
+  @@unique([userId, badgeId])
+  @@index([userId])
+  @@map("user_badges")
+}
+
+// ============================================
+// NOTIFICATIONS
+// ============================================
+
+model Notification {
+  notificationId String           @id @default(uuid()) @map("notification_id")
+
+  user           User             @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  userId         String           @map("user_id")
+
+  type           NotificationType
+  title          String
+  message        String           @db.Text
+
+  actionUrl      String?          @map("action_url")
+  actionText     String?          @map("action_text")
+
+  isRead         Boolean          @default(false) @map("is_read")
+  readAt         DateTime?        @map("read_at")
+
+  createdAt      DateTime         @default(now()) @map("created_at")
 
   @@index([userId])
-  @@map("files")
+  @@index([isRead])
+  @@index([createdAt])
+  @@map("notifications")
 }
+
+enum NotificationType {
+  SWAP_REQUEST
+  SWAP_ACCEPTED
+  SWAP_CANCELLED
+  SESSION_REMINDER
+  NEW_MESSAGE
+  REVIEW_RECEIVED
+  BADGE_EARNED
+  CONNECTION_REQUEST
+  SYSTEM
+}
+
+// ============================================
+// ANALYTICS & AUDIT
+// ============================================
 
 model AuditLog {
-  logId        String   @id @default(uuid()) @map("log_id")
-  userId       String?  @map("user_id")
-  user         User?    @relation(fields: [userId], references: [userId])
-  action       String
-  resourceType String?
-  resourceId   String?
-  ipAddress    String?  @map("ip_address")
-  userAgent    String?  @map("user_agent")
-  status       String?
-  details      Json?
-  createdAt    DateTime @default(now()) @map("created_at")
+  logId         String   @id @default(uuid()) @map("log_id")
+
+  user          User?    @relation(fields: [userId], references: [userId])
+  userId        String?  @map("user_id")
+
+  action        String
+  entity        String
+  entityId      String?  @map("entity_id")
+
+  details       String?  @db.Text
+
+  ipAddress     String   @map("ip_address")
+  userAgent     String?  @map("user_agent")
+
+  createdAt     DateTime @default(now()) @map("created_at")
 
   @@index([userId])
+  @@index([action])
+  @@index([createdAt])
   @@map("audit_logs")
-}
-
-model Share {
-  shareId      String   @id @default(uuid()) @map("share_id")
-  userId       String   @map("user_id")
-  user         User     @relation(fields: [userId], references: [userId])
-  fileId       String   @map("file_id")
-  file         File     @relation(fields: [fileId], references: [fileId])
-  passwordHash String?  @map("password_hash")
-  expiresAt    DateTime? @map("expires_at")
-  maxDownloads Int?     @map("max_downloads")
-  downloads    Int      @default(0)
-  revoked      Boolean  @default(false)
-  createdAt    DateTime @default(now()) @map("created_at")
-
-  @@index([userId])
-  @@index([fileId])
-  @@map("shares")
-}
-
-model Conversion {
-  conversionId String   @id @default(uuid()) @map("conversion_id")
-  userId       String   @map("user_id")
-  user         User     @relation(fields: [userId], references: [userId])
-  fileId       String   @map("file_id")
-  file         File     @relation(fields: [fileId], references: [fileId])
-  targetFormat String   @map("target_format")
-  status       String   @default("queued")
-  externalId   String?  @map("external_id")
-  resultKey    String?  @map("result_key")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
-
-  @@index([userId])
-  @@index([fileId])
-  @@index([externalId])
-  @@map("conversions")
 }

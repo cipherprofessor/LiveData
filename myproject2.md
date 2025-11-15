@@ -1,4 +1,4 @@
-Revolutionary Idea: SkillSwap India 🔄
+Revolutionary Idea: Tej India 🔄
 India's First Peer-to-Peer Skill Exchange Platform (Like Airbnb, but for Skills)
 
 🌍 What's Working in Other Countries (NOT in India)
@@ -53,7 +53,7 @@ Musician knows guitar → Needs website design
 Current "Solution": Pay ₹₹₹ for courses
 Problem: Most can't afford, so they stay stuck
 
-💡 SkillSwap India - The Solution
+💡 Tej India - The Solution
 Core Concept:
 "सीखो और सिखाओ - Trade Skills, Not Money"
 You teach what you know → Learn what you need → Zero rupees spent!
@@ -208,8 +208,8 @@ Bot: "Found 12 teachers! Top match:
       Distance: 2.3 km
       Available: Weekends
       Reply 'YES' to connect"
-6. Offline SkillSwap Events
-📍 BANGALORE SKILLSWAP MEETUP
+6. Offline Tej Events
+📍 BANGALORE Tej MEETUP
 📅 Every Saturday, 4-7 PM
 🏢 91Springboard, Koramangala
 
@@ -345,7 +345,7 @@ TARGET: 10 colleges in Bangalore
 
 Strategy:
 - Recruit 50 student ambassadors (₹5K/month + free Premium)
-- Campus events: "SkillSwap Weekend"
+- Campus events: "Tej Weekend"
 - Free t-shirts for first 1,000 sign-ups
 - College competition: "Most skills swapped" wins ₹50,000
 
@@ -383,9 +383,9 @@ Localization:
 
 🏆 Competitive Advantage
 vs. Traditional Online Courses (Udemy, Coursera)
-FeatureTraditional CoursesSkillSwap IndiaCost₹5,000-30,000₹0 (Free)InteractionPre-recorded videosLive 1-on-1 teachingMotivationLow completion (3%)High (you owe someone)NetworkingZeroBuild lifelong connectionsPracticalTheory-heavyHands-on, real projects
+FeatureTraditional CoursesTej IndiaCost₹5,000-30,000₹0 (Free)InteractionPre-recorded videosLive 1-on-1 teachingMotivationLow completion (3%)High (you owe someone)NetworkingZeroBuild lifelong connectionsPracticalTheory-heavyHands-on, real projects
 vs. Offline Coaching
-FeatureOffline CoachingSkillSwap IndiaCost₹10,000-50,000FreeFlexibilityFixed timingsYou decide whenLocationTravel requiredOnline + Offline optionsVarietyOne skill at a timeMultiple skills simultaneously
+FeatureOffline CoachingTej IndiaCost₹10,000-50,000FreeFlexibilityFixed timingsYou decide whenLocationTravel requiredOnline + Offline optionsVarietyOne skill at a timeMultiple skills simultaneously
 vs. Internshala/Skillenza
 
 They focus on paid courses/internships
@@ -575,14 +575,14 @@ Month 2:
 - Learns Photography, Resume Writing
 - Earns "Learning Beast" badge
 - Gets featured in weekly leaderboard
-- Invited to offline SkillSwap Bangalore meetup
+- Invited to offline Tej Bangalore meetup
 
 Month 6:
 - Priya has 100+ SkillCoins
 - Redeems for ₹500 Amazon voucher
 - Premium user now (₹299/month)
 - Has learned 8 new skills, made 12 friends
-- Gets job offer (mentioned SkillSwap in interview!)
+- Gets job offer (mentioned Tej in interview!)
 
 Result: ₹0 spent, ₹2 Lakhs+ value gained from skills learned! 🚀
 ```
@@ -607,15 +607,15 @@ Tweet: "I taught Excel to 5 people.
         Money spent: ₹0
         Value gained: ₹2 Lakhs
         
-        This is @SkillSwapIndia 🔥"
+        This is @TejIndia 🔥"
 
 Instagram Reel: "POV: You learned 10 skills in 6 months without 
-                 paying a single rupee 💸❌ #SkillSwap #FreeSkills"
+                 paying a single rupee 💸❌ #Tej #FreeSkills"
 
 LinkedIn: "Completed my 50th skill swap today. From learning Python 
-           to teaching marketing, SkillSwap has been a game-changer 
+           to teaching marketing, Tej has been a game-changer 
            for my career. And it's completely FREE! 
-           #ContinuousLearning #SkillSwap"
+           #ContinuousLearning #Tej"
 
 💪 Why This Will Work (Unlike Other Startups)
 1. Proven Model Globally
@@ -736,7 +736,7 @@ Expected Valuation after 12 months: ₹50 Crores (100x return potential)
 "India has 60 crore youth. Most can't afford ₹30,000 courses. But everyone has SOME skill to teach.
 What if we created a platform where you trade skills, not money?
 You teach Excel, someone teaches you English. Zero rupees spent. Both win.
-That's SkillSwap India. The Airbnb of skills. The WhatsApp of learning.
+That's Tej India. The Airbnb of skills. The WhatsApp of learning.
 In 3 years, we'll have 5 crore users learning for free. That's 5 crore people with better jobs, better lives.
 This isn't just a startup. It's a movement. Join us." 🚀
 
@@ -749,7 +749,7 @@ Build landing page (I can code it)
 Create pitch deck (I can design it)
 Apply to Y Combinator / Sequoia Surge
 
-Let's revolutionize skill learning in India! 🇮🇳RetrySThe Problem in India (Youth Crisis) i want exact this create a full plan of this and make sure generate a building script for make this project and remove old used files or data and what you can better this🚀 SkillSwap India - Complete Implementation Plan
+Let's revolutionize skill learning in India! 🇮🇳RetrySThe Problem in India (Youth Crisis) i want exact this create a full plan of this and make sure generate a building script for make this project and remove old used files or data and what you can better this🚀 Tej India - Complete Implementation Plan
 Part 1: Deep Dive into India's Youth Crisis
 
 📊 THE REAL CRISIS (Data-Backed)
@@ -859,9 +859,9 @@ Tier 2/3 Cities (Indore, Nashik, Coimbatore):
 
 Total affected: 10+ Crore youth in Tier 2/3 cities
 
-💡 HOW SKILLSWAP SOLVES EACH PROBLEM
+💡 HOW Tej SOLVES EACH PROBLEM
 Solution Matrix:
-CrisisCurrent "Solution"Why It FailsSkillSwap SolutionUnemployableOnline courses (Udemy)Expensive (₹5K-30K), No practice, Low completion (3%)FREE peer learning, Real practice, Accountability partnerSkill GapOffline coaching₹30K-50K, Fixed timings, Travel costFREE exchange, Flexible schedule, Learn at your paceNo MoneyYouTube tutorialsNo structure, No feedback, No certificateStructured swaps, Live feedback, Verified badgesIsolationSolo learningDemotivating, No support, High dropoutCommunity, Make friends, Group learningTier 2/3 AccessMigrate to Tier 1₹10K/month rent, Leave familyLearn online from anywhere, Local meetupsMental HealthTherapy (₹2K/session)Expensive, StigmaPurpose (teaching), Confidence (helping others), Community
+CrisisCurrent "Solution"Why It FailsTej SolutionUnemployableOnline courses (Udemy)Expensive (₹5K-30K), No practice, Low completion (3%)FREE peer learning, Real practice, Accountability partnerSkill GapOffline coaching₹30K-50K, Fixed timings, Travel costFREE exchange, Flexible schedule, Learn at your paceNo MoneyYouTube tutorialsNo structure, No feedback, No certificateStructured swaps, Live feedback, Verified badgesIsolationSolo learningDemotivating, No support, High dropoutCommunity, Make friends, Group learningTier 2/3 AccessMigrate to Tier 1₹10K/month rent, Leave familyLearn online from anywhere, Local meetupsMental HealthTherapy (₹2K/session)Expensive, StigmaPurpose (teaching), Confidence (helping others), Community
 
 🎯 TARGET PERSONAS (Who We're Helping)
 Persona 1: "Struggling Engineer Ravi"
@@ -886,7 +886,7 @@ What Ravi Needs to Learn:
 × English speaking (for interviews)
 × System design (for better jobs)
 
-SkillSwap Impact:
+Tej Impact:
 - Learns MERN from experienced developer (who needs Excel)
 - Practices English with MBA student (who needs Java)
 - Builds 3 projects, updates resume
@@ -914,7 +914,7 @@ What Priya Needs to Learn:
 × Basic coding (Python for data analysis)
 × Digital marketing (for internships)
 
-SkillSwap Impact:
+Tej Impact:
 - Teaches Accounting to engineer (who teaches Python)
 - Teaches Dance to working professional (who teaches English)
 - Gains confidence through teaching
@@ -944,7 +944,7 @@ What Amit Needs to Learn:
 × SQL & Data Analysis
 × UI/UX Design basics
 
-SkillSwap Impact:
+Tej Impact:
 - Teaches Marketing on weekends (2 hours/week)
 - Learns PM from experienced PM (who wants marketing skills)
 - Learns SQL from data analyst (who wants sales skills)
@@ -974,7 +974,7 @@ What Vikram Needs to Learn:
 × English communication
 × Freelancing skills (to work remotely)
 
-SkillSwap Impact:
+Tej Impact:
 - Learns React ONLINE from Bangalore developer (who needs PHP)
 - Practices English with Delhi professional (who wants C++ basics)
 - Learns freelancing from successful freelancer (who needs hardware help)
@@ -986,7 +986,7 @@ SkillSwap Impact:
 🏗️ COMPLETE TECHNICAL IMPLEMENTATION PLAN
 
 📁 PROJECT STRUCTURE (New Architecture)
-SkillSwap-India/
+Tej-India/
 │
 ├── 🗑️ DELETE_OLD_FILES.md           # Script to clean LiveData files
 │
@@ -1112,7 +1112,7 @@ SkillSwap-India/
 │
 ├── 🆕 scripts/                      # Automation scripts
 │   ├── cleanup-livedata.sh          # Delete old LiveData files
-│   ├── setup-skillswap.sh           # Initialize new project
+│   ├── setup-Tej.sh           # Initialize new project
 │   ├── seed-database.ts             # Seed skills & categories
 │   └── generate-test-users.ts       # Create 1000 test users
 │
@@ -1203,16 +1203,16 @@ echo "==================="
 echo ""
 echo "Next steps:"
 echo "1. Review deleted files"
-echo "2. Run: bash scripts/setup-skillswap.sh"
+echo "2. Run: bash scripts/setup-Tej.sh"
 echo ""
 Make it executable:
 bashchmod +x scripts/cleanup-livedata.sh
 
-🏗️ STEP 2: SETUP SCRIPT (Initialize SkillSwap)
-Create: scripts/setup-skillswap.sh
+🏗️ STEP 2: SETUP SCRIPT (Initialize Tej)
+Create: scripts/setup-Tej.sh
 bash#!/bin/bash
 
-echo "🚀 SETTING UP SKILLSWAP INDIA..."
+echo "🚀 SETTING UP Tej INDIA..."
 echo "================================"
 echo ""
 
@@ -1222,13 +1222,13 @@ cd "$(dirname "$0")/.."
 # 1. Update package names
 echo "📦 Updating package names..."
 cd backend
-npm pkg set name="skillswap-backend"
-npm pkg set description="SkillSwap India - Peer-to-peer skill exchange platform"
+npm pkg set name="Tej-backend"
+npm pkg set description="Tej India - Peer-to-peer skill exchange platform"
 cd ..
 
 cd frontend
-npm pkg set name="skillswap-frontend"
-npm pkg set description="SkillSwap India - Frontend application"
+npm pkg set name="Tej-frontend"
+npm pkg set description="Tej India - Frontend application"
 cd ..
 
 echo "✅ Package names updated!"
@@ -1297,7 +1297,7 @@ NODE_ENV=development
 PORT=4000
 
 # Database
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/skillswap_india
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/Tej_india
 
 # Redis
 REDIS_URL=redis://localhost:6379
@@ -1308,7 +1308,7 @@ JWT_EXPIRY=7d
 
 # Email (SendGrid)
 SENDGRID_API_KEY=your-sendgrid-api-key
-FROM_EMAIL=noreply@skillswap.in
+FROM_EMAIL=noreply@Tej.in
 
 # SMS (Twilio)
 TWILIO_ACCOUNT_SID=your-twilio-account-sid
@@ -1348,7 +1348,7 @@ echo ""
 echo "📝 Creating new Prisma schema..."
 
 cat > prisma/schema.prisma << 'EOF'
-// SkillSwap India - Database Schema
+// Tej India - Database Schema
 
 generator client {
   provider = "prisma-client-js"
@@ -2099,7 +2099,7 @@ enum ReportStatus {
 Save this complete schema and continue with the setup script...
 
 🚀 STEP 3: Continue Setup Script
-Continue scripts/setup-skillswap.sh:
+Continue scripts/setup-Tej.sh:
 bashecho "✅ Prisma schema created!"
 echo ""
 
@@ -2111,7 +2111,7 @@ echo ""
 
 # 7. Create migration
 echo "🗄️  Creating initial database migration..."
-npx prisma migrate dev --name init_skillswap
+npx prisma migrate dev --name init_Tej
 echo "✅ Database migration complete!"
 echo ""
 
@@ -2598,7 +2598,7 @@ echo ""
 
 cd ..
 
-echo "🎉 SKILLSWAP INDIA SETUP COMPLETE!"
+echo "🎉 Tej INDIA SETUP COMPLETE!"
 echo "=================================="
 echo ""
 echo "📋 What was done:"
@@ -2620,7 +2620,7 @@ echo "  - Matching algorithm: docs/MATCHING_ALGORITHM.md"
 echo "  - User guide: docs/USER_GUIDE.md"
 echo ""
 Make it executable:
-bashchmod +x scripts/setup-skillswap.sh
+bashchmod +x scripts/setup-Tej.sh
 
 🎨 STEP 4: Create Core Backend Files
 1. AI Matching Algorithm
@@ -4288,7 +4288,7 @@ export const LandingPage: React.FC = () => {
   {/* How It Works */}
   <section className="how-it-works">
     <div className="container">
-      <h2 className="section-title">How SkillSwap Works</h2>
+      <h2 className="section-title">How Tej Works</h2>
       <p className="section-subtitle">
         Four simple steps to start learning for free
       </p>
@@ -4393,10 +4393,10 @@ export const LandingPage: React.FC = () => {
     </div>
   </section>
 
-  {/* Why Choose SkillSwap */}
+  {/* Why Choose Tej */}
   <section className="features">
     <div className="container">
-      <h2 className="section-title">Why Choose SkillSwap India?</h2>
+      <h2 className="section-title">Why Choose Tej India?</h2>
       
       <div className="features-grid">
         <div className="feature">
@@ -4523,12 +4523,12 @@ export const LandingPage: React.FC = () => {
     <div className="container">
       <div className="footer-grid">
         <div className="footer-section">
-          <h4>SkillSwap India</h4>
+          <h4>Tej India</h4>
           <p>Empowering India's youth through peer-to-peer skill exchange.</p>
           <div className="social-links">
-            <a href="https://twitter.com/skillswapindia">Twitter</a>
-            <a href="https://instagram.com/skillswapindia">Instagram</a>
-            <a href="https://linkedin.com/company/skillswapindia">LinkedIn</a>
+            <a href="https://twitter.com/Tejindia">Twitter</a>
+            <a href="https://instagram.com/Tejindia">Instagram</a>
+            <a href="https://linkedin.com/company/Tejindia">LinkedIn</a>
           </div>
         </div>
 
@@ -4563,7 +4563,7 @@ export const LandingPage: React.FC = () => {
       </div>
 
       <div className="footer-bottom">
-        <p>&copy; 2025 SkillSwap India. All rights reserved.</p>
+        <p>&copy; 2025 Tej India. All rights reserved.</p>
         <p>Made with ❤️ in India</p>
       </div>
     </div>
@@ -4595,7 +4595,7 @@ learned: 'Python, English, Guitar',
 name: 'Priya Sharma',
 location: 'Pune, Maharashtra',
 avatar: '/avatars/priya.jpg',
-text: 'Being shy, I struggled with English. Through SkillSwap, I practiced speaking with 5 different people. Now I can confidently present in class!',
+text: 'Being shy, I struggled with English. Through Tej, I practiced speaking with 5 different people. Now I can confidently present in class!',
 taught: 'Accounting',
 learned: 'English, Web Dev',
 },
@@ -5160,8 +5160,8 @@ Create: `frontend/src/pages/LandingPage.scss`
 # 1. Clean up old LiveData files
 bash scripts/cleanup-livedata.sh
 
-# 2. Setup SkillSwap India
-bash scripts/setup-skillswap.sh
+# 2. Setup Tej India
+bash scripts/setup-Tej.sh
 
 # 3. Start development servers
 
@@ -5252,8 +5252,8 @@ npm run dev
 
 ---
 
-**YOU NOW HAVE A COMPLETE, WORKING SKILLSWAP INDIA MVP!**
+**YOU NOW HAVE A COMPLETE, WORKING Tej INDIA MVP!**
 
-The transformation from LiveData (file storage) to SkillSwap India (peer-to-peer skill exchange) is complete. The system solves a real problem for Indian youth and has massive scale potential.
+The transformation from LiveData (file storage) to Tej India (peer-to-peer skill exchange) is complete. The system solves a real problem for Indian youth and has massive scale potential.
 
 Ready to build the remaining pages? Let me know which page you want to create next! 🚀

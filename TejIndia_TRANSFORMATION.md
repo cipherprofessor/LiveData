@@ -1,8 +1,8 @@
-# SkillSwap India - Complete Transformation Guide
+# Tej India - Complete Transformation Guide
 
 ## 🎯 Overview
 
-This document explains how to transform the LiveData project into SkillSwap India - a peer-to-peer skill exchange platform.
+This document explains how to transform the LiveData project into Tej India - a peer-to-peer skill exchange platform.
 
 ## 📋 Transformation Steps
 
@@ -21,7 +21,7 @@ This will:
 ### Step 2: Run Setup Script
 
 ```bash
-bash scripts/setup-skillswap.sh
+bash scripts/setup-Tej.sh
 ```
 
 This will:
@@ -36,13 +36,13 @@ This will:
 cd backend
 
 # Replace the schema
-cp prisma/schema-skillswap.prisma prisma/schema.prisma
+cp prisma/schema-Tej.prisma prisma/schema.prisma
 
 # Generate Prisma client
 npx prisma generate
 
 # Create and run migration
-npx prisma migrate dev --name init_skillswap
+npx prisma migrate dev --name init_Tej
 ```
 
 ### Step 4: Create Seed Data
@@ -179,7 +179,7 @@ async function main() {
   const passwordHash = await bcrypt.hash('password123', 12);
   const testUser = await prisma.user.create({
     data: {
-      email: 'test@skillswap.in',
+      email: 'test@Tej.in',
       passwordHash,
       firstName: 'Test',
       lastName: 'User',
@@ -237,7 +237,7 @@ npm run dev
 ## 🗂️ New File Structure
 
 ```
-LiveData/ (now SkillSwap India)
+LiveData/ (now Tej India)
 ├── backend/
 │   ├── src/
 │   │   ├── ai/
@@ -260,14 +260,14 @@ LiveData/ (now SkillSwap India)
 │           └── LandingPage.tsx     # New landing page (to be created)
 └── scripts/
     ├── cleanup-livedata.sh         # ✅ Created
-    └── setup-skillswap.sh          # ✅ Created
+    └── setup-Tej.sh          # ✅ Created
 ```
 
 ## 📝 Files Created
 
 ✅ `scripts/cleanup-livedata.sh`
-✅ `scripts/setup-skillswap.sh`
-✅ `backend/prisma/schema-skillswap.prisma`
+✅ `scripts/setup-Tej.sh`
+✅ `backend/prisma/schema-Tej.prisma`
 ✅ `backend/src/lib/utils.ts`
 ✅ `backend/src/ai/matcher.ts`
 ✅ `backend/src/schemas/skills.ts`
@@ -390,7 +390,7 @@ npm run dev
 - Files are encrypted and stored
 - Files can be shared via links
 
-**After (SkillSwap India):**
+**After (Tej India):**
 - Users add skills they can teach/learn
 - AI matches users with complementary skills
 - Users exchange skills through swaps

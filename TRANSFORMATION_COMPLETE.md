@@ -1,17 +1,17 @@
-# 🎉 SkillSwap India Transformation - Phase 1 Complete!
+# 🎉 Tej India Transformation - Phase 1 Complete!
 
 ## ✅ What Has Been Accomplished
 
-I've successfully created the **core infrastructure** to transform LiveData into SkillSwap India. Here's what's ready:
+I've successfully created the **core infrastructure** to transform LiveData into Tej India. Here's what's ready:
 
 ### 📁 Files Created (9 new files)
 
 1. **Transformation Scripts**
    - ✅ `scripts/cleanup-livedata.sh` - Automated cleanup of old files
-   - ✅ `scripts/setup-skillswap.sh` - Automated setup of new structure
+   - ✅ `scripts/setup-Tej.sh` - Automated setup of new structure
 
 2. **Database Schema**
-   - ✅ `backend/prisma/schema-skillswap.prisma` - Complete database design
+   - ✅ `backend/prisma/schema-Tej.prisma` - Complete database design
      - 14 models (User, Skill, Swap, Review, Badge, etc.)
      - All relationships defined
      - Proper indexes for performance
@@ -33,7 +33,7 @@ I've successfully created the **core infrastructure** to transform LiveData into
    - ✅ `backend/src/schemas/swaps.ts` - Swap validation
 
 5. **Documentation**
-   - ✅ `SKILLSWAP_TRANSFORMATION.md` - Complete transformation guide (200+ lines)
+   - ✅ `Tej_TRANSFORMATION.md` - Complete transformation guide (200+ lines)
    - ✅ `TRANSFORMATION_README.md` - Quick start guide (350+ lines)
    - ✅ `TRANSFORMATION_COMPLETE.md` - This file
 
@@ -45,19 +45,19 @@ I've successfully created the **core infrastructure** to transform LiveData into
 # 1. Clean up old LiveData files
 bash scripts/cleanup-livedata.sh
 
-# 2. Setup new SkillSwap structure
-bash scripts/setup-skillswap.sh
+# 2. Setup new Tej structure
+bash scripts/setup-Tej.sh
 
 # 3. Update database schema
 cd backend
-cp prisma/schema-skillswap.prisma prisma/schema.prisma
+cp prisma/schema-Tej.prisma prisma/schema.prisma
 npx prisma generate
-npx prisma migrate dev --name init_skillswap
+npx prisma migrate dev --name init_Tej
 ```
 
 #### Step 2: Create Seed Data
 
-Create `backend/prisma/seed.ts` with the seed script from `SKILLSWAP_TRANSFORMATION.md`, then:
+Create `backend/prisma/seed.ts` with the seed script from `Tej_TRANSFORMATION.md`, then:
 
 ```bash
 cd backend
@@ -160,7 +160,7 @@ Create frontend pages:
 
 All documentation is comprehensive and ready to use:
 
-1. **`SKILLSWAP_TRANSFORMATION.md`**
+1. **`Tej_TRANSFORMATION.md`**
    - Complete transformation guide
    - Seed script template
    - Route implementation examples
@@ -212,7 +212,7 @@ The matcher (`backend/src/ai/matcher.ts`) intelligently matches users based on:
 
 ## 🔄 What Changed from LiveData
 
-| Aspect | Before (LiveData) | After (SkillSwap) |
+| Aspect | Before (LiveData) | After (Tej) |
 |--------|-------------------|-------------------|
 | **Purpose** | File storage & sharing | Peer-to-peer skill exchange |
 | **Users** | Upload files | Teach & learn skills |
@@ -335,7 +335,7 @@ npm install
 
 ## 🌟 The Vision
 
-**SkillSwap India** aims to solve India's youth skill crisis:
+**Tej India** aims to solve India's youth skill crisis:
 
 - **Problem**: 83% engineering graduates unemployable
 - **Cause**: Expensive upskilling courses (₹30,000+)
@@ -350,7 +350,7 @@ npm install
 ### Option 1: Continue Implementation Yourself
 
 Use the comprehensive documentation:
-1. Read `SKILLSWAP_TRANSFORMATION.md`
+1. Read `Tej_TRANSFORMATION.md`
 2. Follow `TRANSFORMATION_README.md`
 3. Implement backend routes
 4. Create frontend pages
@@ -369,7 +369,7 @@ Just ask: *"Create the skills route"* or *"Create the landing page"*
 ## 📞 Support
 
 All documentation is self-contained. If stuck:
-1. Check `SKILLSWAP_TRANSFORMATION.md` for detailed examples
+1. Check `Tej_TRANSFORMATION.md` for detailed examples
 2. Check `TRANSFORMATION_README.md` for troubleshooting
 3. Check `CLAUDE.md` for LiveData legacy docs
 4. Use Prisma Studio to inspect database: `npx prisma studio`

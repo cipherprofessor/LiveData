@@ -1,4 +1,4 @@
-Revolutionary Idea: SkillSwap India 🔄
+Revolutionary Idea: Tej India 🔄
 India's First Peer-to-Peer Skill Exchange Platform (Like Airbnb, but for Skills)
 
 🌍 What's Working in Other Countries (NOT in India)
@@ -53,7 +53,7 @@ Musician knows guitar → Needs website design
 Current "Solution": Pay ₹₹₹ for courses
 Problem: Most can't afford, so they stay stuck
 
-💡 SkillSwap India - The Solution
+💡 Tej India - The Solution
 Core Concept:
 "सीखो और सिखाओ - Trade Skills, Not Money"
 You teach what you know → Learn what you need → Zero rupees spent!
@@ -208,8 +208,8 @@ Bot: "Found 12 teachers! Top match:
       Distance: 2.3 km
       Available: Weekends
       Reply 'YES' to connect"
-6. Offline SkillSwap Events
-📍 BANGALORE SKILLSWAP MEETUP
+6. Offline Tej Events
+📍 BANGALORE Tej MEETUP
 📅 Every Saturday, 4-7 PM
 🏢 91Springboard, Koramangala
 
@@ -345,7 +345,7 @@ TARGET: 10 colleges in Bangalore
 
 Strategy:
 - Recruit 50 student ambassadors (₹5K/month + free Premium)
-- Campus events: "SkillSwap Weekend"
+- Campus events: "Tej Weekend"
 - Free t-shirts for first 1,000 sign-ups
 - College competition: "Most skills swapped" wins ₹50,000
 
@@ -383,9 +383,9 @@ Localization:
 
 🏆 Competitive Advantage
 vs. Traditional Online Courses (Udemy, Coursera)
-FeatureTraditional CoursesSkillSwap IndiaCost₹5,000-30,000₹0 (Free)InteractionPre-recorded videosLive 1-on-1 teachingMotivationLow completion (3%)High (you owe someone)NetworkingZeroBuild lifelong connectionsPracticalTheory-heavyHands-on, real projects
+FeatureTraditional CoursesTej IndiaCost₹5,000-30,000₹0 (Free)InteractionPre-recorded videosLive 1-on-1 teachingMotivationLow completion (3%)High (you owe someone)NetworkingZeroBuild lifelong connectionsPracticalTheory-heavyHands-on, real projects
 vs. Offline Coaching
-FeatureOffline CoachingSkillSwap IndiaCost₹10,000-50,000FreeFlexibilityFixed timingsYou decide whenLocationTravel requiredOnline + Offline optionsVarietyOne skill at a timeMultiple skills simultaneously
+FeatureOffline CoachingTej IndiaCost₹10,000-50,000FreeFlexibilityFixed timingsYou decide whenLocationTravel requiredOnline + Offline optionsVarietyOne skill at a timeMultiple skills simultaneously
 vs. Internshala/Skillenza
 
 They focus on paid courses/internships
@@ -575,14 +575,14 @@ Month 2:
 - Learns Photography, Resume Writing
 - Earns "Learning Beast" badge
 - Gets featured in weekly leaderboard
-- Invited to offline SkillSwap Bangalore meetup
+- Invited to offline Tej Bangalore meetup
 
 Month 6:
 - Priya has 100+ SkillCoins
 - Redeems for ₹500 Amazon voucher
 - Premium user now (₹299/month)
 - Has learned 8 new skills, made 12 friends
-- Gets job offer (mentioned SkillSwap in interview!)
+- Gets job offer (mentioned Tej in interview!)
 
 Result: ₹0 spent, ₹2 Lakhs+ value gained from skills learned! 🚀
 ```
@@ -607,15 +607,15 @@ Tweet: "I taught Excel to 5 people.
         Money spent: ₹0
         Value gained: ₹2 Lakhs
         
-        This is @SkillSwapIndia 🔥"
+        This is @TejIndia 🔥"
 
 Instagram Reel: "POV: You learned 10 skills in 6 months without 
-                 paying a single rupee 💸❌ #SkillSwap #FreeSkills"
+                 paying a single rupee 💸❌ #Tej #FreeSkills"
 
 LinkedIn: "Completed my 50th skill swap today. From learning Python 
-           to teaching marketing, SkillSwap has been a game-changer 
+           to teaching marketing, Tej has been a game-changer 
            for my career. And it's completely FREE! 
-           #ContinuousLearning #SkillSwap"
+           #ContinuousLearning #Tej"
 
 💪 Why This Will Work (Unlike Other Startups)
 1. Proven Model Globally
@@ -736,7 +736,7 @@ Expected Valuation after 12 months: ₹50 Crores (100x return potential)
 "India has 60 crore youth. Most can't afford ₹30,000 courses. But everyone has SOME skill to teach.
 What if we created a platform where you trade skills, not money?
 You teach Excel, someone teaches you English. Zero rupees spent. Both win.
-That's SkillSwap India. The Airbnb of skills. The WhatsApp of learning.
+That's Tej India. The Airbnb of skills. The WhatsApp of learning.
 In 3 years, we'll have 5 crore users learning for free. That's 5 crore people with better jobs, better lives.
 This isn't just a startup. It's a movement. Join us." 🚀
 

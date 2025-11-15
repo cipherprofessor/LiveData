@@ -1,4 +1,4 @@
-# 🔄 LiveData → SkillSwap India Transformation
+# 🔄 LiveData → Tej India Transformation
 
 ## 🎯 What Has Been Done
 
@@ -6,10 +6,10 @@
 
 1. **Scripts**:
    - `scripts/cleanup-livedata.sh` - Removes old LiveData files
-   - `scripts/setup-skillswap.sh` - Sets up SkillSwap structure
+   - `scripts/setup-Tej.sh` - Sets up Tej structure
 
 2. **Database**:
-   - `backend/prisma/schema-skillswap.prisma` - New complete database schema
+   - `backend/prisma/schema-Tej.prisma` - New complete database schema
 
 3. **Backend Core**:
    - `backend/src/lib/utils.ts` - Utility functions (distance calculation, etc.)
@@ -18,7 +18,7 @@
    - `backend/src/schemas/swaps.ts` - Swap validation schemas
 
 4. **Documentation**:
-   - `SKILLSWAP_TRANSFORMATION.md` - Complete transformation guide
+   - `Tej_TRANSFORMATION.md` - Complete transformation guide
    - `TRANSFORMATION_README.md` - This file
 
 ## 🚀 Quick Start
@@ -30,7 +30,7 @@
 bash scripts/cleanup-livedata.sh
 
 # Setup new structure
-bash scripts/setup-skillswap.sh
+bash scripts/setup-Tej.sh
 ```
 
 ### Step 2: Update Database
@@ -39,18 +39,18 @@ bash scripts/setup-skillswap.sh
 cd backend
 
 # Replace the schema
-cp prisma/schema-skillswap.prisma prisma/schema.prisma
+cp prisma/schema-Tej.prisma prisma/schema.prisma
 
 # Generate Prisma client
 npx prisma generate
 
 # Create migration
-npx prisma migrate dev --name init_skillswap
+npx prisma migrate dev --name init_Tej
 ```
 
 ### Step 3: Create Seed File
 
-Create `backend/prisma/seed.ts` with the content from `SKILLSWAP_TRANSFORMATION.md`
+Create `backend/prisma/seed.ts` with the content from `Tej_TRANSFORMATION.md`
 
 Then run:
 ```bash
@@ -276,7 +276,7 @@ cd frontend && npm run preview
 
 ## 📚 Reference Implementation
 
-See the provided code in `SKILLSWAP_TRANSFORMATION.md` for:
+See the provided code in `Tej_TRANSFORMATION.md` for:
 - Complete seed script
 - Route handler examples
 - Frontend component examples
@@ -359,4 +359,4 @@ The transformation is complete when:
 **Estimated Time to Complete**: 2-3 days
 **Difficulty**: Medium
 
-**Questions?** See `SKILLSWAP_TRANSFORMATION.md` or CLAUDE.md
+**Questions?** See `Tej_TRANSFORMATION.md` or CLAUDE.md

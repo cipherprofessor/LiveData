@@ -50,28 +50,34 @@ enum NotificationType {
 
 // Models
 model User {
-  id              String        @id @default(uuid())
-  email           String        @unique
-  password        String
-  name            String
-  phone           String?       @unique
-  avatar          String?
-  bio             String?
-  dateOfBirth     DateTime?
-  gender          String?
-  city            String?
-  state           String?
-  pincode         String?
-  latitude        Float?
-  longitude       Float?
-  role            UserRole      @default(USER)
-  status          UserStatus    @default(ACTIVE)
-  coins           Int           @default(100)
-  emailVerified   Boolean       @default(false)
-  phoneVerified   Boolean       @default(false)
-  lastActive      DateTime?
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  userId            String        @id @default(uuid()) @map("id")
+  email             String        @unique
+  password          String
+  name              String
+  phone             String?       @unique
+  avatar            String?
+  bio               String?
+  dateOfBirth       DateTime?
+  gender            String?
+  city              String?
+  state             String?
+  pincode           String?
+  latitude          Float?
+  longitude         Float?
+  role              UserRole      @default(USER)
+  status            UserStatus    @default(ACTIVE)
+  coins             Int           @default(100)
+  level             Int           @default(1)
+  experiencePoints  Int           @default(0)
+  rating            Float         @default(0)
+  completedSwaps    Int           @default(0)
+  totalHoursTaught  Float         @default(0)
+  totalHoursLearned Float         @default(0)
+  emailVerified     Boolean       @default(false)
+  phoneVerified     Boolean       @default(false)
+  lastActive        DateTime?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
 
   // Relations
   skills          UserSkill[]
@@ -90,13 +96,13 @@ model User {
   @@index([email])
   @@index([city, state])
   @@index([latitude, longitude])
+  @@index([rating])
   @@map("users")
 }
 
 model SkillCategory {
-  id          String   @id @default(uuid())
+  categoryId  String   @id @default(uuid()) @map("id")
   name        String   @unique
-  slug        String   @unique
   description String?
   icon        String?
   color       String?
@@ -110,46 +116,53 @@ model SkillCategory {
 }
 
 model Skill {
-  id          String        @id @default(uuid())
+  skillId     String        @id @default(uuid()) @map("id")
   name        String
-  slug        String        @unique
   description String?
   categoryId  String
+  icon        String?
   isActive    Boolean       @default(true)
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
-  category    SkillCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  category    SkillCategory @relation(fields: [categoryId], references: [categoryId], onDelete: Cascade)
   userSkills  UserSkill[]
 
   @@index([categoryId])
+  @@index([name])
   @@map("skills")
 }
 
+enum SkillType {
+  TEACH
+  LEARN
+}
+
 model UserSkill {
-  id          String     @id @default(uuid())
-  userId      String
-  skillId     String
-  level       SkillLevel @default(BEGINNER)
-  canTeach    Boolean    @default(false)
-  wantsToLearn Boolean   @default(false)
-  description String?
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  userSkillId       String     @id @default(uuid()) @map("id")
+  userId            String
+  skillId           String
+  skillType         SkillType
+  proficiencyLevel  SkillLevel @default(BEGINNER)
+  yearsOfExperience Int        @default(0)
+  description       String?
+  isVerified        Boolean    @default(false)
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
 
-  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  skill       Skill      @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  skill Skill @relation(fields: [skillId], references: [skillId], onDelete: Cascade)
 
-  @@unique([userId, skillId])
+  @@unique([userId, skillId, skillType])
   @@index([userId])
   @@index([skillId])
-  @@index([canTeach])
-  @@index([wantsToLearn])
+  @@index([skillType])
+  @@index([proficiencyLevel])
   @@map("user_skills")
 }
 
 model Swap {
-  id                String      @id @default(uuid())
+  swapId            String      @id @default(uuid()) @map("id")
   initiatorId       String
   receiverId        String
   initiatorSkillId  String
@@ -164,8 +177,8 @@ model Swap {
   createdAt         DateTime    @default(now())
   updatedAt         DateTime    @updatedAt
 
-  initiator         User        @relation("SwapInitiator", fields: [initiatorId], references: [id], onDelete: Cascade)
-  receiver          User        @relation("SwapReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+  initiator         User        @relation("SwapInitiator", fields: [initiatorId], references: [userId], onDelete: Cascade)
+  receiver          User        @relation("SwapReceiver", fields: [receiverId], references: [userId], onDelete: Cascade)
   sessions          SwapSession[]
 
   @@index([initiatorId])
@@ -176,7 +189,7 @@ model Swap {
 }
 
 model SwapSession {
-  id          String    @id @default(uuid())
+  sessionId   String    @id @default(uuid()) @map("id")
   swapId      String
   startTime   DateTime
   endTime     DateTime?
@@ -185,39 +198,38 @@ model SwapSession {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  swap        Swap      @relation(fields: [swapId], references: [id], onDelete: Cascade)
+  swap        Swap      @relation(fields: [swapId], references: [swapId], onDelete: Cascade)
 
   @@index([swapId])
   @@map("swap_sessions")
 }
 
 model Review {
-  id          String   @id @default(uuid())
-  authorId    String
-  receiverId  String
+  reviewId    String   @id @default(uuid()) @map("id")
+  studentId   String   @map("authorId")
+  teacherId   String   @map("receiverId")
   rating      Int      // 1-5
   comment     String?
   isPublic    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  author      User     @relation("ReviewAuthor", fields: [authorId], references: [id], onDelete: Cascade)
-  receiver    User     @relation("ReviewReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+  student     User     @relation("ReviewAuthor", fields: [studentId], references: [userId], onDelete: Cascade)
+  teacher     User     @relation("ReviewReceiver", fields: [teacherId], references: [userId], onDelete: Cascade)
 
-  @@index([authorId])
-  @@index([receiverId])
+  @@index([studentId])
+  @@index([teacherId])
   @@index([rating])
   @@map("reviews")
 }
 
 model Badge {
-  id          String      @id @default(uuid())
+  badgeId     String      @id @default(uuid()) @map("id")
   name        String      @unique
-  slug        String      @unique
   description String
   icon        String
-  criteria    Json        // Flexible criteria for earning badge
-  points      Int         @default(0)
+  criteria    String      // e.g., "SWAP_COUNT", "RATING", "REGISTRATION_DATE"
+  threshold   Int         // e.g., 1, 5, 10, 50, 100
   isActive    Boolean     @default(true)
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
@@ -228,13 +240,13 @@ model Badge {
 }
 
 model UserBadge {
-  id          String   @id @default(uuid())
+  userBadgeId String   @id @default(uuid()) @map("id")
   userId      String
   badgeId     String
   earnedAt    DateTime @default(now())
 
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  badge       Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  badge       Badge    @relation(fields: [badgeId], references: [badgeId], onDelete: Cascade)
 
   @@unique([userId, badgeId])
   @@index([userId])
@@ -243,13 +255,13 @@ model UserBadge {
 }
 
 model Connection {
-  id          String   @id @default(uuid())
-  userId      String
+  connectionId    String   @id @default(uuid()) @map("id")
+  userId          String
   connectedUserId String
-  createdAt   DateTime @default(now())
+  createdAt       DateTime @default(now())
 
-  user        User     @relation("UserConnections", fields: [userId], references: [id], onDelete: Cascade)
-  connectedUser User   @relation("ConnectedUsers", fields: [connectedUserId], references: [id], onDelete: Cascade)
+  user          User     @relation("UserConnections", fields: [userId], references: [userId], onDelete: Cascade)
+  connectedUser User     @relation("ConnectedUsers", fields: [connectedUserId], references: [userId], onDelete: Cascade)
 
   @@unique([userId, connectedUserId])
   @@index([userId])
@@ -258,7 +270,7 @@ model Connection {
 }
 
 model Message {
-  id          String   @id @default(uuid())
+  messageId   String   @id @default(uuid()) @map("id")
   senderId    String
   receiverId  String
   content     String
@@ -267,7 +279,7 @@ model Message {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  sender      User     @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+  sender      User     @relation("MessageSender", fields: [senderId], references: [userId], onDelete: Cascade)
 
   @@index([senderId])
   @@index([receiverId])
@@ -276,9 +288,8 @@ model Message {
 }
 
 model Event {
-  id          String    @id @default(uuid())
+  eventId     String    @id @default(uuid()) @map("id")
   title       String
-  slug        String    @unique
   description String
   imageUrl    String?
   startTime   DateTime
@@ -298,13 +309,13 @@ model Event {
 }
 
 model EventAttendance {
-  id          String   @id @default(uuid())
-  eventId     String
-  userId      String
+  attendanceId String   @id @default(uuid()) @map("id")
+  eventId      String
+  userId       String
   registeredAt DateTime @default(now())
 
-  event       Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event        Event    @relation(fields: [eventId], references: [eventId], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
   @@unique([eventId, userId])
   @@index([eventId])
@@ -313,17 +324,17 @@ model EventAttendance {
 }
 
 model Notification {
-  id          String           @id @default(uuid())
-  userId      String
-  type        NotificationType
-  title       String
-  message     String
-  data        Json?
-  isRead      Boolean          @default(false)
-  readAt      DateTime?
-  createdAt   DateTime         @default(now())
+  notificationId String           @id @default(uuid()) @map("id")
+  userId         String
+  type           NotificationType
+  title          String
+  message        String
+  data           Json?
+  isRead         Boolean          @default(false)
+  readAt         DateTime?
+  createdAt      DateTime         @default(now())
 
-  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user           User             @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
   @@index([userId])
   @@index([isRead])
@@ -332,7 +343,7 @@ model Notification {
 }
 
 model AuditLog {
-  id          String   @id @default(uuid())
+  logId       String   @id @default(uuid()) @map("id")
   userId      String?
   action      String
   entity      String
@@ -342,7 +353,7 @@ model AuditLog {
   userAgent   String?
   createdAt   DateTime @default(now())
 
-  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  user        User?    @relation(fields: [userId], references: [userId], onDelete: SetNull)
 
   @@index([userId])
   @@index([action])

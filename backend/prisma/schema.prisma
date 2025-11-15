@@ -1,0 +1,352 @@
+// This is your Prisma schema file
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Enums
+enum UserRole {
+  USER
+  ADMIN
+  MODERATOR
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  BANNED
+}
+
+enum SkillLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
+}
+
+enum SwapStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  COMPLETED
+  CANCELLED
+}
+
+enum NotificationType {
+  SWAP_REQUEST
+  SWAP_ACCEPTED
+  SWAP_REJECTED
+  SWAP_COMPLETED
+  MESSAGE
+  BADGE_EARNED
+  EVENT_REMINDER
+  SYSTEM
+}
+
+// Models
+model User {
+  id              String        @id @default(uuid())
+  email           String        @unique
+  password        String
+  name            String
+  phone           String?       @unique
+  avatar          String?
+  bio             String?
+  dateOfBirth     DateTime?
+  gender          String?
+  city            String?
+  state           String?
+  pincode         String?
+  latitude        Float?
+  longitude       Float?
+  role            UserRole      @default(USER)
+  status          UserStatus    @default(ACTIVE)
+  coins           Int           @default(100)
+  emailVerified   Boolean       @default(false)
+  phoneVerified   Boolean       @default(false)
+  lastActive      DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  // Relations
+  skills          UserSkill[]
+  swapsInitiated  Swap[]        @relation("SwapInitiator")
+  swapsReceived   Swap[]        @relation("SwapReceiver")
+  reviews         Review[]      @relation("ReviewAuthor")
+  reviewsReceived Review[]      @relation("ReviewReceiver")
+  badges          UserBadge[]
+  connections     Connection[]  @relation("UserConnections")
+  connectedBy     Connection[]  @relation("ConnectedUsers")
+  messages        Message[]     @relation("MessageSender")
+  notifications   Notification[]
+  events          EventAttendance[]
+  auditLogs       AuditLog[]
+
+  @@index([email])
+  @@index([city, state])
+  @@index([latitude, longitude])
+  @@map("users")
+}
+
+model SkillCategory {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  icon        String?
+  color       String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  skills      Skill[]
+
+  @@map("skill_categories")
+}
+
+model Skill {
+  id          String        @id @default(uuid())
+  name        String
+  slug        String        @unique
+  description String?
+  categoryId  String
+  isActive    Boolean       @default(true)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  category    SkillCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  userSkills  UserSkill[]
+
+  @@index([categoryId])
+  @@map("skills")
+}
+
+model UserSkill {
+  id          String     @id @default(uuid())
+  userId      String
+  skillId     String
+  level       SkillLevel @default(BEGINNER)
+  canTeach    Boolean    @default(false)
+  wantsToLearn Boolean   @default(false)
+  description String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill       Skill      @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, skillId])
+  @@index([userId])
+  @@index([skillId])
+  @@index([canTeach])
+  @@index([wantsToLearn])
+  @@map("user_skills")
+}
+
+model Swap {
+  id                String      @id @default(uuid())
+  initiatorId       String
+  receiverId        String
+  initiatorSkillId  String
+  receiverSkillId   String
+  status            SwapStatus  @default(PENDING)
+  message           String?
+  duration          Int?        // in minutes
+  scheduledAt       DateTime?
+  completedAt       DateTime?
+  cancelledAt       DateTime?
+  cancellationReason String?
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  initiator         User        @relation("SwapInitiator", fields: [initiatorId], references: [id], onDelete: Cascade)
+  receiver          User        @relation("SwapReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+  sessions          SwapSession[]
+
+  @@index([initiatorId])
+  @@index([receiverId])
+  @@index([status])
+  @@index([scheduledAt])
+  @@map("swaps")
+}
+
+model SwapSession {
+  id          String    @id @default(uuid())
+  swapId      String
+  startTime   DateTime
+  endTime     DateTime?
+  duration    Int?      // in minutes
+  notes       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  swap        Swap      @relation(fields: [swapId], references: [id], onDelete: Cascade)
+
+  @@index([swapId])
+  @@map("swap_sessions")
+}
+
+model Review {
+  id          String   @id @default(uuid())
+  authorId    String
+  receiverId  String
+  rating      Int      // 1-5
+  comment     String?
+  isPublic    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  author      User     @relation("ReviewAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  receiver    User     @relation("ReviewReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  @@index([authorId])
+  @@index([receiverId])
+  @@index([rating])
+  @@map("reviews")
+}
+
+model Badge {
+  id          String      @id @default(uuid())
+  name        String      @unique
+  slug        String      @unique
+  description String
+  icon        String
+  criteria    Json        // Flexible criteria for earning badge
+  points      Int         @default(0)
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  userBadges  UserBadge[]
+
+  @@map("badges")
+}
+
+model UserBadge {
+  id          String   @id @default(uuid())
+  userId      String
+  badgeId     String
+  earnedAt    DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge       Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, badgeId])
+  @@index([userId])
+  @@index([badgeId])
+  @@map("user_badges")
+}
+
+model Connection {
+  id          String   @id @default(uuid())
+  userId      String
+  connectedUserId String
+  createdAt   DateTime @default(now())
+
+  user        User     @relation("UserConnections", fields: [userId], references: [id], onDelete: Cascade)
+  connectedUser User   @relation("ConnectedUsers", fields: [connectedUserId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, connectedUserId])
+  @@index([userId])
+  @@index([connectedUserId])
+  @@map("connections")
+}
+
+model Message {
+  id          String   @id @default(uuid())
+  senderId    String
+  receiverId  String
+  content     String
+  isRead      Boolean  @default(false)
+  readAt      DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  sender      User     @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([senderId])
+  @@index([receiverId])
+  @@index([isRead])
+  @@map("messages")
+}
+
+model Event {
+  id          String    @id @default(uuid())
+  title       String
+  slug        String    @unique
+  description String
+  imageUrl    String?
+  startTime   DateTime
+  endTime     DateTime
+  location    String?
+  isOnline    Boolean   @default(false)
+  maxAttendees Int?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  attendees   EventAttendance[]
+
+  @@index([startTime])
+  @@index([isActive])
+  @@map("events")
+}
+
+model EventAttendance {
+  id          String   @id @default(uuid())
+  eventId     String
+  userId      String
+  registeredAt DateTime @default(now())
+
+  event       Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, userId])
+  @@index([eventId])
+  @@index([userId])
+  @@map("event_attendance")
+}
+
+model Notification {
+  id          String           @id @default(uuid())
+  userId      String
+  type        NotificationType
+  title       String
+  message     String
+  data        Json?
+  isRead      Boolean          @default(false)
+  readAt      DateTime?
+  createdAt   DateTime         @default(now())
+
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([isRead])
+  @@index([createdAt])
+  @@map("notifications")
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  userId      String?
+  action      String
+  entity      String
+  entityId    String?
+  metadata    Json?
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([action])
+  @@index([entity])
+  @@index([createdAt])
+  @@map("audit_logs")
+}

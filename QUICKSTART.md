@@ -1,408 +1,130 @@
-# 🚀 Tej India - Quick Start Guide
+# Tej India - Quick Start Guide
 
-Get Tej India running on your machine in **5 minutes**!
+Get up and running with Tej India in minutes!
 
----
+## Prerequisites
 
-## 📋 Prerequisites
+Make sure you have installed:
+- Node.js 18+ ([Download](https://nodejs.org/))
+- Docker Desktop ([Download](https://www.docker.com/products/docker-desktop))
+- Git ([Download](https://git-scm.com/))
 
-Make sure you have these installed:
+## Quick Setup (5 minutes)
 
-- ✅ **Node.js** 18+ ([Download](https://nodejs.org/))
-- ✅ **Docker Desktop** ([Download](https://www.docker.com/products/docker-desktop))
-- ✅ **Git** ([Download](https://git-scm.com/))
-
----
-
-## 🎯 Option 1: Quick Start with Docker (Recommended)
-
-### Step 1: Clone & Setup
-
+### 1. Clone & Navigate
 ```bash
-# Clone the repository
-git clone <your-repo-url>
+git clone <repository-url>
 cd LiveData
+```
 
-# Start PostgreSQL and Redis
+### 2. Start Infrastructure
+```bash
 docker-compose up -d
-
-# Wait for containers to be healthy (about 30 seconds)
-docker-compose ps
 ```
+This starts PostgreSQL, Redis, and pgAdmin.
 
-### Step 2: Backend Setup
-
+### 3. Setup Backend
 ```bash
-# Navigate to backend (you'll create this structure)
-mkdir -p backend
 cd backend
-
-# Initialize Node.js project
-npm init -y
-
-# Install dependencies
-npm install @prisma/client prisma bcrypt express cors dotenv
-npm install -D typescript @types/node @types/express @types/bcrypt ts-node
-
-# Copy Prisma schema
-cp ../schema.prisma ./prisma/schema.prisma
-
-# Copy environment file
-cp ../.env.example ./.env
-
-# Generate Prisma Client
+cp .env.example .env
+npm install
 npx prisma generate
-
-# Run migrations
-npx prisma migrate dev --name init
-
-# Seed database
-cp ../seed.ts ./prisma/seed.ts
-npx ts-node prisma/seed.ts
-```
-
-### Step 3: Verify Database
-
-```bash
-# Open Prisma Studio to view data
-npx prisma studio
-
-# Or access pgAdmin at http://localhost:5050
-# Email: admin@tejindia.com
-# Password: admin123
-```
-
-### Step 4: Start Development
-
-```bash
-# Start backend (you'll create server.ts)
+npx prisma migrate dev
 npm run dev
+```
+Backend running at: **http://localhost:5000**
 
-# In another terminal, start frontend
+### 4. Setup Frontend (New Terminal)
+```bash
 cd frontend
+cp .env.example .env
 npm install
 npm run dev
 ```
+Frontend running at: **http://localhost:3000**
 
-🎉 **Done!** Visit http://localhost:5173
+## 🎉 You're Done!
 
----
+Visit **http://localhost:3000** to see the app.
 
-## 🔧 Option 2: Manual Setup (Without Docker)
+## Next Steps
 
-### Step 1: Install PostgreSQL
+1. **Create an account** on the homepage
+2. **Add your skills** to your profile
+3. **Find skill swaps** with other users
+4. **Start learning and teaching!**
 
-**macOS:**
+## Admin Tools
+
+- **pgAdmin**: http://localhost:5050
+  - Email: admin@tejindia.com
+  - Password: admin123
+
+- **API Health Check**: http://localhost:5000/health
+
+- **Prisma Studio** (Database UI):
+  ```bash
+  cd backend
+  npx prisma studio
+  ```
+
+## Common Issues
+
+### Port Already in Use?
 ```bash
-brew install postgresql@15
-brew services start postgresql@15
-```
-
-**Ubuntu/Debian:**
-```bash
-sudo apt update
-sudo apt install postgresql-15 postgresql-contrib-15
-sudo systemctl start postgresql
-```
-
-**Windows:**
-Download from [PostgreSQL Official Site](https://www.postgresql.org/download/windows/)
-
-### Step 2: Create Database
-
-```bash
-# Login to PostgreSQL
-sudo -u postgres psql
-
-# Run these commands in psql:
-CREATE DATABASE tej_india;
-CREATE USER tej_user WITH ENCRYPTED PASSWORD 'tej_password_123';
-GRANT ALL PRIVILEGES ON DATABASE tej_india TO tej_user;
-
-# Enable PostGIS extension
-\c tej_india
-CREATE EXTENSION IF NOT EXISTS postgis;
-
-# Exit
-\q
-```
-
-### Step 3: Install Redis
-
-**macOS:**
-```bash
-brew install redis
-brew services start redis
-```
-
-**Ubuntu/Debian:**
-```bash
-sudo apt install redis-server
-sudo systemctl start redis
-```
-
-**Windows:**
-Download from [Redis Official Site](https://redis.io/download)
-
-### Step 4: Setup Project
-
-```bash
-# Follow steps from Option 1, Step 2 onwards
-cd backend
-npm install
-cp ../.env.example ./.env
-
-# Edit .env with your database credentials
-nano .env
-
-# Run migrations and seed
-npx prisma migrate dev --name init
-npx ts-node prisma/seed.ts
-```
-
----
-
-## 🗂️ Project Structure to Create
-
-```
-LiveData/ (Tej India)
-├── backend/
-│   ├── prisma/
-│   │   ├── schema.prisma         # Copy from root
-│   │   ├── seed.ts                # Copy from root
-│   │   └── migrations/            # Auto-generated
-│   ├── src/
-│   │   ├── server.ts              # Main server file
-│   │   ├── routes/
-│   │   │   ├── auth.ts
-│   │   │   ├── skills.ts
-│   │   │   ├── swaps.ts
-│   │   │   └── users.ts
-│   │   ├── controllers/
-│   │   ├── middleware/
-│   │   └── utils/
-│   ├── package.json
-│   ├── tsconfig.json
-│   └── .env
-├── frontend/
-│   ├── src/
-│   │   ├── pages/
-│   │   ├── components/
-│   │   ├── styles/
-│   │   └── App.tsx
-│   ├── package.json
-│   └── vite.config.ts
-├── docker-compose.yml
-├── schema.prisma
-├── seed.ts
-├── .env.example
-└── TEJ-INDIA-README.md
-```
-
----
-
-## 🧪 Testing the Setup
-
-### Test Database Connection
-
-```bash
-cd backend
-npx prisma studio
-```
-
-Visit http://localhost:5555 - You should see your data!
-
-### Test PostgreSQL
-
-```bash
-# Connect to database
-psql -U tej_user -d tej_india -h localhost
-
-# Run a query
-SELECT * FROM "User";
-
-# Exit
-\q
-```
-
-### Test Redis
-
-```bash
-redis-cli ping
-# Should return: PONG
-```
-
----
-
-## 🔐 Test Login Credentials
-
-After seeding, use these credentials to test:
-
-**User 1 (Rahul):**
-- Email: `rahul@tejindia.com`
-- Password: `password123`
-- Skills: Python, Excel (teaches) | English (learns)
-
-**User 2 (Priya):**
-- Email: `priya@tejindia.com`
-- Password: `password123`
-- Skills: English (teaches) | Excel (learns)
-
-**User 3 (Arjun):**
-- Email: `arjun@tejindia.com`
-- Password: `password123`
-
----
-
-## 📊 Database Management Tools
-
-### Prisma Studio (Built-in)
-```bash
-npx prisma studio
-# Visit: http://localhost:5555
-```
-
-### pgAdmin (Docker)
-If you used docker-compose:
-- URL: http://localhost:5050
-- Email: `admin@tejindia.com`
-- Password: `admin123`
-
-### DBeaver (Recommended Desktop App)
-Download: https://dbeaver.io/download/
-
-Connection details:
-- Host: `localhost`
-- Port: `5432`
-- Database: `tej_india`
-- Username: `tej_user`
-- Password: `tej_password_123`
-
----
-
-## 🛠️ Common Commands
-
-### Database
-
-```bash
-# Generate Prisma Client
-npx prisma generate
-
-# Create migration
-npx prisma migrate dev --name migration_name
-
-# Reset database (⚠️ deletes all data)
-npx prisma migrate reset
-
-# Seed database
-npx ts-node prisma/seed.ts
-
-# Open Prisma Studio
-npx prisma studio
-```
-
-### Docker
-
-```bash
-# Start containers
-docker-compose up -d
-
-# Stop containers
+# Stop Docker containers
 docker-compose down
 
-# View logs
-docker-compose logs -f postgres
+# Check what's using the port
+lsof -i :5000  # Backend
+lsof -i :3000  # Frontend
+lsof -i :5432  # PostgreSQL
+```
 
-# Restart containers
-docker-compose restart
+### Database Connection Error?
+```bash
+# Reset database
+cd backend
+npx prisma migrate reset
+```
 
-# Remove all data (⚠️ destructive)
+### Need to Start Fresh?
+```bash
+# Stop everything
+docker-compose down -v
+
+# Remove node_modules
+rm -rf backend/node_modules frontend/node_modules
+
+# Start over from Step 2
+```
+
+## Development Workflow
+
+```bash
+# Start Docker services
+docker-compose up -d
+
+# Terminal 1 - Backend
+cd backend && npm run dev
+
+# Terminal 2 - Frontend
+cd frontend && npm run dev
+
+# Terminal 3 - Database UI (optional)
+cd backend && npx prisma studio
+```
+
+## Stop Everything
+
+```bash
+# Stop Docker containers
+docker-compose down
+
+# Or to remove volumes too
 docker-compose down -v
 ```
 
 ---
 
-## 🐛 Troubleshooting
-
-### Issue: Cannot connect to PostgreSQL
-
-```bash
-# Check if PostgreSQL is running
-docker-compose ps postgres
-
-# View logs
-docker-compose logs postgres
-
-# Restart PostgreSQL
-docker-compose restart postgres
-```
-
-### Issue: Prisma migrate fails
-
-```bash
-# Reset and try again
-npx prisma migrate reset
-npx prisma migrate dev --name init
-```
-
-### Issue: Port already in use
-
-```bash
-# Check what's using port 5432
-lsof -i :5432
-
-# Kill the process or change port in docker-compose.yml
-# Change: "5433:5432" and update .env
-```
-
-### Issue: PostGIS extension error
-
-```bash
-# Connect to database
-docker exec -it tej-india-postgres psql -U tej_user -d tej_india
-
-# Enable extension manually
-CREATE EXTENSION IF NOT EXISTS postgis;
-```
-
----
-
-## 📚 Next Steps
-
-1. ✅ Database is running
-2. ✅ Data is seeded
-3. ⏭️ Create backend API server
-4. ⏭️ Create frontend React app
-5. ⏭️ Implement authentication
-6. ⏭️ Build matching algorithm
-7. ⏭️ Deploy to production
-
----
-
-## 🎓 Learning Resources
-
-### PostgreSQL
-- [PostgreSQL Tutorial](https://www.postgresqltutorial.com/)
-- [Prisma Docs](https://www.prisma.io/docs/)
-
-### TypeScript
-- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
-
-### React
-- [React Docs](https://react.dev/)
-
----
-
-## 💬 Need Help?
-
-- 📧 Email: support@tejindia.com
-- 📖 Documentation: See `TEJ-INDIA-README.md`
-- 🐛 Issues: Create a GitHub issue
-
----
-
-## 🎉 You're All Set!
-
-Your Tej India development environment is ready. Start building the future of skill exchange in India! 🚀🇮🇳
-
-**Next file to read:** `TEJ-INDIA-README.md`
+**Need help?** Check the [full README](README.md) or [documentation](docs/)

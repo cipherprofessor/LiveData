@@ -1,7 +1,7 @@
 {
-  "name": "tej-india-backend",
+  "name": "skillswap-backend",
   "version": "1.0.0",
-  "description": "Tej India - Peer-to-Peer Skill Exchange Platform Backend",
+  "description": "SkillSwap India - Peer-to-Peer Skill Exchange Platform Backend",
   "main": "dist/server.js",
   "scripts": {
     "dev": "nodemon src/server.ts",
@@ -24,7 +24,10 @@
     "express",
     "prisma"
   ],
-  "author": "Tej India Team",
+  "author": "SkillSwap India Team",
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
   "license": "MIT",
   "dependencies": {
     "express": "^4.18.2",

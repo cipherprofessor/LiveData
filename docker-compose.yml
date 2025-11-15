@@ -4,20 +4,20 @@ services:
   # PostgreSQL Database
   postgres:
     image: postgres:15-alpine
-    container_name: tejindia_postgres
+    container_name: skillswap_postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: tejindia
-      POSTGRES_PASSWORD: tejindia123
-      POSTGRES_DB: tejindia_db
+      POSTGRES_USER: skillswap
+      POSTGRES_PASSWORD: skillswap123
+      POSTGRES_DB: skillswap_db
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - tejindia_network
+      - skillswap_network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U tejindia"]
+      test: ["CMD-SHELL", "pg_isready -U skillswap"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -25,7 +25,7 @@ services:
   # Redis Cache
   redis:
     image: redis:7-alpine
-    container_name: tejindia_redis
+    container_name: skillswap_redis
     restart: unless-stopped
     command: redis-server --appendonly yes
     ports:
@@ -33,7 +33,7 @@ services:
     volumes:
       - redis_data:/data
     networks:
-      - tejindia_network
+      - skillswap_network
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -43,10 +43,10 @@ services:
   # pgAdmin - Database Management UI
   pgadmin:
     image: dpage/pgadmin4:latest
-    container_name: tejindia_pgadmin
+    container_name: skillswap_pgadmin
     restart: unless-stopped
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@tejindia.com
+      PGADMIN_DEFAULT_EMAIL: admin@skillswap.in
       PGADMIN_DEFAULT_PASSWORD: admin123
       PGADMIN_CONFIG_SERVER_MODE: 'False'
     ports:
@@ -54,7 +54,7 @@ services:
     volumes:
       - pgadmin_data:/var/lib/pgadmin
     networks:
-      - tejindia_network
+      - skillswap_network
     depends_on:
       - postgres
 
@@ -67,5 +67,5 @@ volumes:
     driver: local
 
 networks:
-  tejindia_network:
+  skillswap_network:
     driver: bridge

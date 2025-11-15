@@ -21,6 +21,7 @@ import userRoutes from './routes/user.routes';
 import skillRoutes from './routes/skill.routes';
 import matchRoutes from './routes/match.routes';
 import swapRoutes from './routes/swap.routes';
+import notificationRoutes from './routes/notification.routes';
 
 const app: Application = express();
 const httpServer = createServer(app);
@@ -59,6 +60,7 @@ app.use(`/api/${API_VERSION}/users`, userRoutes);
 app.use(`/api/${API_VERSION}/skills`, skillRoutes);
 app.use(`/api/${API_VERSION}/matches`, matchRoutes);
 app.use(`/api/${API_VERSION}/swaps`, swapRoutes);
+app.use(`/api/${API_VERSION}/notifications`, notificationRoutes);
 
 // Socket.IO connection handling
 io.on('connection', (socket) => {

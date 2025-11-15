@@ -40,8 +40,8 @@ export const authenticate = async (
 
     // Verify user still exists and is active
     const user = await prisma.user.findUnique({
-      where: { id: decoded.userId },
-      select: { id: true, email: true, role: true, status: true },
+      where: { userId: decoded.userId },
+      select: { userId: true, email: true, role: true, status: true },
     });
 
     if (!user) {
@@ -53,7 +53,7 @@ export const authenticate = async (
     }
 
     req.user = {
-      userId: user.id,
+      userId: user.userId,
       email: user.email,
       role: user.role,
     };

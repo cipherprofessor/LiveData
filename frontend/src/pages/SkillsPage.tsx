@@ -8,8 +8,6 @@ export default function SkillsPage() {
   const [mySkills, setMySkills] = useState<UserSkill[]>([]);
   const [allSkills, setAllSkills] = useState<Skill[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [skillType, setSkillType] = useState<'TEACHING' | 'LEARNING'>('TEACHING');
 
   useEffect(() => {
     loadSkills();
@@ -63,12 +61,6 @@ export default function SkillsPage() {
       <div>
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900">My Skills</h1>
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="btn-primary"
-          >
-            Add Skill
-          </button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

@@ -19,6 +19,7 @@ import { errorHandler } from './middleware/errorHandler';
 import authRoutes from './routes/auth.routes';
 import userRoutes from './routes/user.routes';
 import skillRoutes from './routes/skill.routes';
+import matchRoutes from './routes/match.routes';
 import swapRoutes from './routes/swap.routes';
 
 const app: Application = express();
@@ -56,6 +57,7 @@ const API_VERSION = process.env.API_VERSION || 'v1';
 app.use(`/api/${API_VERSION}/auth`, authRoutes);
 app.use(`/api/${API_VERSION}/users`, userRoutes);
 app.use(`/api/${API_VERSION}/skills`, skillRoutes);
+app.use(`/api/${API_VERSION}/matches`, matchRoutes);
 app.use(`/api/${API_VERSION}/swaps`, swapRoutes);
 
 // Socket.IO connection handling
@@ -95,13 +97,13 @@ const PORT = process.env.PORT || 5000;
 
 httpServer.listen(PORT, () => {
   console.log(`
-    ╔═══════════════════════════════════════╗
-    ║   Tej India Backend Server Started   ║
-    ╠═══════════════════════════════════════╣
-    ║  Environment: ${process.env.NODE_ENV?.padEnd(24) || 'development'.padEnd(24)}║
-    ║  Port: ${PORT.toString().padEnd(31)}║
-    ║  API Version: ${API_VERSION.padEnd(26)}║
-    ╚═══════════════════════════════════════╝
+    ╔═══════════════════════════════════════════╗
+    ║  SkillSwap India Backend Server Started  ║
+    ╠═══════════════════════════════════════════╣
+    ║  Environment: ${process.env.NODE_ENV?.padEnd(28) || 'development'.padEnd(28)}║
+    ║  Port: ${PORT.toString().padEnd(35)}║
+    ║  API Version: ${API_VERSION.padEnd(30)}║
+    ╚═══════════════════════════════════════════╝
   `);
 });
 

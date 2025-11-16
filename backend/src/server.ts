@@ -14,6 +14,8 @@ dotenv.config();
 import { corsOptions } from './config/cors';
 import { rateLimiter } from './middleware/rateLimiter';
 import { errorHandler } from './middleware/errorHandler';
+import { redis } from './config/redis';
+import { performanceMiddleware } from './middleware/performance';
 
 // Import routes
 import authRoutes from './routes/auth.routes';
@@ -31,6 +33,7 @@ import subscriptionRoutes from './routes/subscription.routes';
 import webhookRoutes from './routes/webhook.routes';
 import adminRoutes from './routes/admin.routes';
 import moderationRoutes from './routes/moderation.routes';
+import performanceRoutes from './routes/performance.routes';
 
 // Import services
 import { chatService } from './services/chat.service';
@@ -54,6 +57,9 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Rate limiting
 app.use(rateLimiter);
+
+// Performance monitoring (track all requests)
+app.use(performanceMiddleware);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
@@ -82,6 +88,7 @@ app.use(`/api/${API_VERSION}/subscriptions`, subscriptionRoutes);
 app.use(`/api/${API_VERSION}/webhooks`, webhookRoutes);
 app.use(`/api/${API_VERSION}/admin`, adminRoutes);
 app.use(`/api/${API_VERSION}/moderation`, moderationRoutes);
+app.use(`/api/${API_VERSION}/performance`, performanceRoutes);
 
 // Socket.IO connection handling with Chat support
 io.on('connection', (socket) => {
@@ -173,6 +180,12 @@ app.use((req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
+// Initialize Redis connection
+redis.connect().catch((error) => {
+  console.error('Failed to connect to Redis:', error.message);
+  console.warn('Server will continue without Redis caching');
+});
+
 httpServer.listen(PORT, () => {
   console.log(`
     ╔═══════════════════════════════════════════╗
@@ -181,15 +194,42 @@ httpServer.listen(PORT, () => {
     ║  Environment: ${process.env.NODE_ENV?.padEnd(28) || 'development'.padEnd(28)}║
     ║  Port: ${PORT.toString().padEnd(35)}║
     ║  API Version: ${API_VERSION.padEnd(30)}║
+    ║  Redis: ${(redis.isRedisAvailable() ? 'Connected' : 'Unavailable').padEnd(32)}║
     ╚═══════════════════════════════════════════╝
   `);
 });
 
 // Graceful shutdown
-process.on('SIGTERM', () => {
+process.on('SIGTERM', async () => {
   console.log('SIGTERM signal received: closing HTTP server');
-  httpServer.close(() => {
+  httpServer.close(async () => {
     console.log('HTTP server closed');
+
+    // Disconnect Redis
+    try {
+      await redis.disconnect();
+      console.log('Redis disconnected');
+    } catch (error) {
+      console.error('Error disconnecting Redis:', error);
+    }
+
+    process.exit(0);
+  });
+});
+
+process.on('SIGINT', async () => {
+  console.log('\nSIGINT signal received: closing HTTP server');
+  httpServer.close(async () => {
+    console.log('HTTP server closed');
+
+    // Disconnect Redis
+    try {
+      await redis.disconnect();
+      console.log('Redis disconnected');
+    } catch (error) {
+      console.error('Error disconnecting Redis:', error);
+    }
+
     process.exit(0);
   });
 });

@@ -1,8 +1,8 @@
 # SkillSwap India - Development Progress Tracker
 
 **Last Updated:** 2025-11-16
-**Current Phase:** Week 1-24 Complete ✅ (Includes Monetization)
-**Overall Progress:** 58% Complete (24 of 48-week roadmap)
+**Current Phase:** Week 1-28 Complete ✅ (Includes Admin Dashboard)
+**Overall Progress:** 67% Complete (28 of 48-week roadmap)
 
 ---
 
@@ -24,6 +24,7 @@
 | **Enhanced Notifications** | ✅ Complete | 100% |
 | **Events & Community** | ✅ Complete | 100% |
 | **Monetization & Subscriptions** | ✅ Complete | 100% |
+| **Admin Dashboard & Analytics** | ✅ Complete | 100% |
 
 ---
 
@@ -1290,26 +1291,303 @@ User Experience:
 
 ---
 
+### Week 25-28: Admin Dashboard & Analytics (100% Complete) ✅
+
+**Objective:** Build comprehensive admin dashboard for platform management, user administration, content moderation, and business analytics.
+
+#### Prisma Schema Enhancements
+
+**New Enums:**
+```prisma
+enum ReportType {
+  USER, REVIEW, MESSAGE, EVENT, PROFILE_CONTENT,
+  SPAM, HARASSMENT, INAPPROPRIATE_CONTENT, OTHER
+}
+
+enum ReportStatus {
+  PENDING, UNDER_REVIEW, RESOLVED, DISMISSED
+}
+
+enum ModeratorActionType {
+  BAN_USER, SUSPEND_USER, WARN_USER, DELETE_CONTENT,
+  DISMISS_REPORT, VERIFY_USER, REMOVE_SUBSCRIPTION
+}
+```
+
+**New Models:**
+- ✅ **Report** - User reports for content/policy violations
+  - Report type, status, reason, description, evidence
+  - Reporter and reported user references
+  - Content references (reviewId, messageId, eventId)
+  - Resolution tracking with moderator notes
+  - Timestamps and audit trail
+
+- ✅ **ModeratorAction** - Track all moderation actions
+  - Action type, target user, target content
+  - Moderator who performed action
+  - Reason, notes, duration (for suspensions)
+  - Report association
+  - Audit logging
+
+- ✅ **AdminSettings** - Platform-wide configuration
+  - Key-value settings storage
+  - Category organization (general, moderation, payments, features)
+  - Update tracking with admin user
+  - JSON value support
+
+#### Backend Implementation (11 files, ~2,734 lines)
+
+**1. Middleware (`backend/src/middleware/admin.ts` - 137 lines)**
+- ✅ `requireAdmin()` - Admin-only access control
+- ✅ `requireModerator()` - Admin + Moderator access
+- ✅ `requireRole(...roles)` - Flexible role-based access
+- ✅ RBAC with active status checking
+- ✅ Role attachment to request object
+
+**2. Analytics Service (`backend/src/services/analytics.service.ts` - 593 lines)**
+- ✅ **getDashboardMetrics()** - Comprehensive platform overview
+  - User metrics: total, active, new (today/week/month), verified, suspended, banned
+  - Growth rate calculation (month-over-month)
+  - Retention rate (active users retention)
+
+- ✅ **getSubscriptionMetrics()** - Revenue and subscription analytics
+  - Tier distribution (FREE, BASIC, PRO)
+  - MRR (Monthly Recurring Revenue) calculation
+  - ARR (Annual Recurring Revenue)
+  - Churn rate tracking
+  - Free-to-paid conversion rate
+
+- ✅ **getRevenueMetrics()** - Financial performance
+  - Total revenue, monthly revenue, revenue by tier
+  - ARPU (Average Revenue Per User)
+  - Refunds tracking
+
+- ✅ **getSwapMetrics()** - Platform engagement
+  - Total, active, completed, cancelled swaps
+  - Completion rate calculation
+  - Average rating
+  - Total hours exchanged
+
+- ✅ **getUserGrowthData(days)** - User acquisition trends (30-day default)
+- ✅ **getRevenueGrowthData(months)** - Revenue trends (12-month default)
+- ✅ **getTopUsers(limit)** - Leaderboard of top performers
+- ✅ **getRecentActivities(limit)** - Latest platform activities
+
+**3. Admin Service (`backend/src/services/admin.service.ts` - 621 lines)**
+- ✅ **searchUsers()** - Advanced user search with filters
+  - Search by name, email, phone
+  - Filter by role, status, tier, city, state
+  - Verified-only filter
+  - Pagination and sorting
+
+- ✅ **getUserDetails(userId)** - Complete user profile
+  - Skills, subscription, payments
+  - Swaps (initiated + received)
+  - Reviews (given + received)
+  - Badges, reports, audit logs
+
+- ✅ **updateUser()** - Admin user modifications
+  - Name, email, phone, role, status updates
+  - Email verification, phone verification
+  - Coins, level adjustments
+  - Audit logging and user notifications
+  - Admin protection (can't modify other admins)
+
+- ✅ **deleteUser()** - Soft delete (ban) with audit trail
+- ✅ **createStaffUser()** - Create admin/moderator accounts
+- ✅ **manageSubscription()** - Admin subscription control
+  - Tier changes, status updates
+  - Auto-renew management
+  - Audit logging
+
+- ✅ **getSubscriptions()** - List all subscriptions with filters
+- ✅ **getSettings() / updateSetting()** - Platform configuration management
+- ✅ **getQuickActions()** - Dashboard alerts (pending reports, suspended users, etc.)
+- ✅ **getAuditLogs()** - Complete audit trail with filters
+
+**4. Moderation Service (`backend/src/services/moderation.service.ts` - 540 lines)**
+- ✅ **createReport()** - User report submission
+  - Duplicate detection (24-hour window)
+  - Evidence attachment support
+  - Auto-notification to moderators
+
+- ✅ **getReports()** - List reports with filters (status, type)
+- ✅ **getReport(reportId)** - Detailed report view with actions
+- ✅ **updateReportStatus()** - Change report status with resolution notes
+- ✅ **executeModeratorAction()** - Perform moderation actions
+  - Ban user permanently
+  - Suspend user temporarily (with duration)
+  - Warn user
+  - Delete content (review, message, event)
+  - Verify user manually
+  - Remove subscription
+  - Dismiss report
+
+- ✅ **getModerationStats()** - Moderation dashboard metrics
+  - Total, pending, resolved, dismissed reports
+  - Total moderator actions
+  - Banned and suspended users count
+  - Reports by type breakdown
+  - Actions by type breakdown
+
+- ✅ **getModeratorActivity()** - Individual moderator performance tracking
+
+**5. Controllers**
+- ✅ **admin.controller.ts** (304 lines) - 11 admin endpoints
+- ✅ **analytics.controller.ts** (138 lines) - 5 analytics endpoints
+- ✅ **moderation.controller.ts** (174 lines) - 7 moderation endpoints
+
+**6. Routes**
+- ✅ **admin.routes.ts** - 17 admin + analytics routes
+- ✅ **moderation.routes.ts** - 7 moderation routes
+
+#### Frontend Implementation (2 files, ~780 lines)
+
+**1. Admin Service (`frontend/src/services/admin.service.ts` - 388 lines)**
+- ✅ Complete API integration for all admin endpoints
+- ✅ TypeScript interfaces for all data types
+- ✅ Dashboard metrics fetching
+- ✅ User management functions
+- ✅ Analytics data retrieval
+- ✅ Moderation functions
+- ✅ Utility functions:
+  - `formatNumber()` - K/M suffix formatting
+  - `formatPercentage()` - Percentage with +/- sign
+  - `formatCurrency()` - INR formatting
+  - `getRoleColor()` - Badge color classes
+  - `getStatusColor()` - Status badge colors
+
+**2. Admin Dashboard (`frontend/src/pages/AdminDashboard.tsx` - 392 lines)**
+- ✅ **Dashboard Overview** - Real-time metrics display
+  - Quick Actions section for urgent items
+  - User metrics (4 cards): total, active, new, retention
+  - Revenue metrics (4 cards): total, MRR, monthly, ARPU
+  - Subscription breakdown (3 cards): FREE, BASIC, PRO distribution
+  - Platform activity stats (6 metrics): swaps, messages, events, reviews
+
+- ✅ **MetricCard Component** - Reusable metric display
+  - Icon, title, value
+  - Trend indicator (up/down arrow)
+  - Change percentage
+  - Color-coded by metric type
+
+- ✅ **SubscriptionCard Component** - Tier distribution
+  - Tier badge with gradient
+  - User count
+  - Percentage of total
+
+- ✅ **ActivityStat Component** - Platform activity metrics
+- ✅ Responsive grid layouts
+- ✅ Loading and error states
+- ✅ Toast notifications
+- ✅ Refresh functionality
+
+#### API Endpoints Added
+
+**Admin Endpoints (11):**
+```
+GET    /api/v1/admin/dashboard              - Dashboard overview
+GET    /api/v1/admin/users                  - Search users
+GET    /api/v1/admin/users/:id              - User details
+PUT    /api/v1/admin/users/:id              - Update user
+DELETE /api/v1/admin/users/:id              - Delete user
+POST   /api/v1/admin/staff                  - Create staff
+GET    /api/v1/admin/subscriptions          - List subscriptions
+PUT    /api/v1/admin/subscriptions/:userId  - Manage subscription
+GET    /api/v1/admin/settings               - Get settings
+PUT    /api/v1/admin/settings/:key          - Update setting
+GET    /api/v1/admin/audit-logs             - Audit trail
+```
+
+**Analytics Endpoints (5):**
+```
+GET /api/v1/admin/analytics/dashboard         - Metrics
+GET /api/v1/admin/analytics/user-growth       - User growth (30 days)
+GET /api/v1/admin/analytics/revenue-growth    - Revenue growth (12 months)
+GET /api/v1/admin/analytics/top-users         - Top performers
+GET /api/v1/admin/analytics/recent-activities - Recent activities
+```
+
+**Moderation Endpoints (7):**
+```
+POST /api/v1/moderation/reports                   - Create report
+GET  /api/v1/moderation/reports                   - List reports
+GET  /api/v1/moderation/reports/:id               - Report details
+PUT  /api/v1/moderation/reports/:id/status        - Update status
+POST /api/v1/moderation/actions                   - Execute action
+GET  /api/v1/moderation/stats                     - Moderation stats
+GET  /api/v1/moderation/moderators/:id/activity   - Moderator activity
+```
+
+#### Key Features
+
+**Admin Dashboard:**
+- Real-time platform metrics
+- User growth tracking
+- Revenue analytics (MRR, ARR, ARPU)
+- Subscription distribution
+- Quick action alerts
+- Platform activity monitoring
+
+**User Management:**
+- Advanced search and filtering
+- User profile editing
+- Role management (USER, MODERATOR, ADMIN)
+- Status management (ACTIVE, SUSPENDED, BANNED)
+- Subscription management
+- Audit logging
+
+**Content Moderation:**
+- User report system
+- 9 report types
+- 4 report statuses
+- 7 moderator action types
+- Content deletion (reviews, messages, events)
+- User suspension/ban
+- Moderation statistics
+
+**Analytics:**
+- User metrics (growth, retention, verification)
+- Subscription metrics (MRR, ARR, churn, conversion)
+- Swap metrics (completion rate, rating)
+- Revenue metrics (total, by tier, ARPU)
+- 30-day user growth trends
+- 12-month revenue trends
+- Top performing users
+
+**Security:**
+- RBAC middleware (requireAdmin, requireModerator)
+- Audit logging for all admin actions
+- Admin protection (can't modify other admins)
+- Active status checking
+- Role-based access control
+
+**API Endpoints Added:** +23 (Admin: 11, Analytics: 5, Moderation: 7) (Total: 127)
+**Files Created:** 13 (11 backend, 2 frontend)
+**Lines of Code:** ~3,514 lines
+
+---
+
 ## 🚧 In Progress
 
-*Currently: Week 1-24 complete (58% of roadmap). Next: Week 25-28 - Advanced Features.*
+*Currently: Week 1-28 complete (67% of roadmap). Next: Week 29-32 - Testing & Quality Assurance.*
 
 ---
 
 ## ⏳ Pending Features
 
-### Week 25-28: Advanced Features
-- ⏳ **Android App**
-  - React Native setup
-  - All web features
-  - Push notifications
-  - Camera integration
-  - Location services
+### Week 29-32: Testing & Quality Assurance
+- ⏳ **Unit Testing**
+  - Jest configuration
+  - Service tests
+  - Controller tests
+  - 80%+ coverage target
 
-- ⏳ **iOS App**
-  - iOS-specific features
-  - App Store submission
-  - TestFlight beta
+- ⏳ **Integration Testing**
+  - API endpoint tests
+  - Database integration tests
+  - Authentication flows
+  - Payment flows
 
 ### Week 33-48: Advanced Features
 - ⏳ **Video Calling**

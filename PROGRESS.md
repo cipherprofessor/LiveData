@@ -1,8 +1,8 @@
 # SkillSwap India - Development Progress Tracker
 
-**Last Updated:** 2025-11-15
-**Current Phase:** Week 1-6 Complete ✅ | Ready for Week 7-8
-**Overall Progress:** 25% Complete (Weeks 1-6 of 48-week roadmap)
+**Last Updated:** 2025-11-16
+**Current Phase:** Week 1-8 Complete ✅ | Ready for Week 9-10
+**Overall Progress:** 30% Complete (Weeks 1-8 of 48-week roadmap)
 
 ---
 
@@ -18,9 +18,10 @@
 | **Skills Matching Algorithm** | ✅ Complete | 100% |
 | **Swap Management** | ✅ Complete | 100% |
 | **Notification System** | ✅ Complete | 100% |
+| **Reviews & Ratings** | ✅ Complete | 100% |
 | **Real-time Chat** | ⏳ Pending | 0% |
-| **Gamification** | ⏳ Pending | 0% |
-| **Frontend Application** | ⏳ Pending | 0% |
+| **Gamification UI** | ⏳ Pending | 0% |
+| **Events System** | ⏳ Pending | 0% |
 
 ---
 
@@ -436,37 +437,172 @@ Each match includes reasons like:
   - Bulk update for all unread notifications
   - Returns count of updated notifications
 
+### Week 7-8: Reviews & Ratings System (100% Complete) 🆕
+
+#### Review System (`backend/src/controllers/review.controller.ts` - 615 lines)
+- ✅ **POST `/api/v1/reviews`** - Submit review for completed swap
+  - 1-5 star overall rating (required)
+  - Optional comment (500 char limit)
+  - Detailed ratings: teachingQuality, communication, punctuality (1-5 each)
+  - Tag selection from 10 predefined tags (patient, knowledgeable, etc.)
+  - Public/private review toggle
+  - One review per student per swap (unique constraint)
+  - Validation: swap must be completed, user must be participant
+  - Auto-update teacher's rating after submission
+  - Send notification to teacher
+  - Gamification: +5 coins, +10 XP for positive reviews (4+ stars)
+
+- ✅ **GET `/api/v1/reviews/user/:userId`** - Get user reviews with stats
+  - Pagination support (limit/offset)
+  - Filter by minimum rating
+  - Returns: reviews list, rating stats, common tags, pagination info
+  - Public reviews only
+  - Sorted by creation date (newest first)
+
+- ✅ **GET `/api/v1/reviews/swap/:swapId`** - Get swap-specific reviews
+  - Both parties' reviews for a swap
+  - Includes student and teacher details
+
+- ✅ **GET `/api/v1/reviews/:id`** - Get single review details
+  - Complete review with student/teacher/swap info
+  - Includes all votes on the review
+
+- ✅ **PUT `/api/v1/reviews/:id`** - Edit review (24-hour window)
+  - Author-only permission
+  - Update rating, comment, detailed ratings, tags, visibility
+  - Sets isEdited flag
+  - Recalculates teacher rating if rating changed
+  - 24-hour time limit enforced
+
+- ✅ **DELETE `/api/v1/reviews/:id`** - Delete review
+  - Author or admin permission
+  - Recalculates teacher rating after deletion
+
+- ✅ **POST `/api/v1/reviews/:id/vote`** - Vote helpful/not helpful
+  - One vote per user per review
+  - Update or create vote
+  - Auto-update helpfulCount on review
+  - Boolean: true = helpful, false = not helpful
+
+- ✅ **GET `/api/v1/reviews/stats/:userId`** - Detailed rating statistics
+  - Overall rating, total reviews
+  - Star distribution (5★, 4★, 3★, 2★, 1★)
+  - Detailed ratings averages
+  - Top 10 most common tags
+  - Recent 5 reviews
+
+#### Rating Calculation Service (`backend/src/services/rating.service.ts` - 230 lines)
+- ✅ **Sophisticated Rating Algorithm**
+  - Weighted average: 70% recent reviews (last 90 days), 30% older reviews
+  - Only counts public reviews
+  - Rounds to 2 decimal places
+  - Auto-recalculates on review create/edit/delete
+
+- ✅ **Rating Breakdown Analysis**
+  - Star distribution calculation
+  - Detailed ratings: teaching quality, communication, punctuality
+  - Only includes reviews that have these optional fields
+  - Percentage-based progress bars
+
+- ✅ **Helper Functions**
+  - canEditReview() - Checks 24-hour window
+  - getMostCommonTags() - Aggregates and sorts tags by frequency
+  - Automatic rating update on review changes
+
+#### Frontend Components
+
+**ReviewModal.tsx** (350 lines) - Submit/Edit Reviews
+- ✅ 5-star rating selector with hover effects
+- ✅ Comment textarea (500 char counter)
+- ✅ Optional detailed ratings (3 separate 5-star selectors)
+- ✅ Tag selector (10 predefined tags, multi-select)
+- ✅ Public/private toggle
+- ✅ Edit mode support (pre-fills existing review data)
+- ✅ Form validation
+- ✅ Loading states with spinner
+- ✅ Responsive design
+- ✅ Success/error toast notifications
+
+**ReviewDisplay.tsx** (400 lines) - View Reviews & Stats
+- ✅ Rating statistics card:
+  - Large overall rating number with stars
+  - Total review count
+  - Star distribution bar chart (5★ to 1★)
+  - Detailed ratings progress bars
+  - Most common tags display
+- ✅ Review filtering (All, 5★, 4+★, 3+★)
+- ✅ Individual review cards:
+  - Student avatar and name with level badge
+  - Star rating display
+  - Comment text
+  - Tags as pills
+  - Date posted with calendar icon
+  - Helpful button with count
+  - Edit/Delete actions (for own reviews)
+- ✅ Empty state handling
+- ✅ Loading states
+- ✅ Pagination support
+
+**reviews.service.ts** (170 lines) - API Integration
+- ✅ submitReview() - Submit new review
+- ✅ getUserReviews() - Get user reviews with pagination
+- ✅ getSwapReviews() - Get swap-specific reviews
+- ✅ getReviewById() - Get single review
+- ✅ editReview() - Edit existing review
+- ✅ deleteReview() - Delete review
+- ✅ voteOnReview() - Vote helpful/not helpful
+- ✅ getUserStats() - Get rating statistics
+- ✅ TypeScript interfaces for all request/response types
+
+#### Database Schema Updates
+- ✅ **Review Model Enhanced**
+  - Added swapId (required foreign key to Swap)
+  - Added teachingQuality, communication, punctuality (optional 1-5)
+  - Added tags (String array, default [])
+  - Added helpfulCount (Int, default 0)
+  - Added isEdited (Boolean, default false)
+  - Added unique constraint on (swapId, studentId)
+
+- ✅ **New ReviewVote Model**
+  - voteId (UUID primary key)
+  - reviewId (foreign key to Review)
+  - userId (String)
+  - isHelpful (Boolean)
+  - createdAt (DateTime)
+  - Unique constraint on (reviewId, userId)
+
+- ✅ **Swap Model Update**
+  - Added reviews relation (one-to-many)
+
+#### Key Features
+- ✅ **Weighted Rating System**: Recent reviews (90 days) = 70%, older = 30%
+- ✅ **24-Hour Edit Window**: Users can edit reviews within 24 hours
+- ✅ **Helpful Voting**: Community can vote on review helpfulness
+- ✅ **Tag System**: 10 predefined tags for categorizing teachers
+- ✅ **Detailed Ratings**: Optional breakdown (teaching, communication, punctuality)
+- ✅ **Privacy Control**: Public/private review toggle
+- ✅ **Duplicate Prevention**: One review per student per swap
+- ✅ **Automatic Rating Updates**: Teacher rating recalculates on any review change
+- ✅ **Gamification Integration**: Coins and XP rewards for leaving reviews
+- ✅ **Notification Integration**: Teachers notified when reviewed
+
+**Code Files:**
+- `backend/src/controllers/review.controller.ts` (615 lines) ✅
+- `backend/src/services/rating.service.ts` (230 lines) ✅
+- `backend/src/routes/review.routes.ts` (90 lines) ✅
+- `frontend/src/components/ReviewModal.tsx` (350 lines) ✅
+- `frontend/src/components/ReviewDisplay.tsx` (400 lines) ✅
+- `frontend/src/services/reviews.service.ts` (170 lines) ✅
+
 ---
 
 ## 🚧 In Progress
 
-*Currently: All Week 1-6 features complete. Ready for Week 7-8 (Reviews & Ratings).*
+*Currently: Week 7-8 (Reviews & Ratings) complete. Ready for Week 9-10 (Real-time Chat).*
 
 ---
 
 ## ⏳ Pending Features
-
-### Week 7-8: Reviews & Ratings (HIGH PRIORITY - NEXT)
-
-### Week 7-8: Reviews & Ratings
-- ⏳ **Review System**
-  - Submit review after swap
-  - 1-5 star rating
-  - Written feedback
-  - Public/private reviews
-  - Edit review (within 24 hours)
-
-- ⏳ **Rating Calculation**
-  - Overall user rating update
-  - Skill-specific ratings
-  - Recent vs historical weighting
-  - Minimum reviews threshold
-
-- ⏳ **Review Display**
-  - Profile reviews list
-  - Review filtering
-  - Helpful votes
-  - Report inappropriate reviews
 
 ### Week 9-10: Real-time Chat
 - ⏳ **Chat System**

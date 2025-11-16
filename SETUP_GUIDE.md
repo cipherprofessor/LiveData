@@ -140,6 +140,8 @@ The `docker-compose.yml` file starts these services:
 
 ### Backend (.env)
 
+**✅ Minimum Required (App works with just these!):**
+
 ```env
 # Database
 DATABASE_URL=postgresql://skillswap:skillswap123@localhost:5432/skillswap_dev
@@ -153,7 +155,33 @@ JWT_REFRESH_SECRET=your-super-secret-refresh-key-change-this-in-production-min-3
 
 # CORS
 CORS_ORIGIN=http://localhost:3000
+
+**⚙️ Optional Services (Can skip - see OPTIONAL_FEATURES.md):**
+```env
+# Email - OPTIONAL (OTPs show in console without this)
+# SMTP_HOST=smtp.gmail.com
+# SMTP_USER=your-email@gmail.com
+# SMTP_PASSWORD=your-app-password
+
+# Payments, SMS, Images - All OPTIONAL
+# See OPTIONAL_FEATURES.md for details
+```
+
+📝 **Note:** Email is NOT required! OTPs show in console logs during development.
 SOCKET_CORS_ORIGIN=http://localhost:3000
+
+**⚙️ Optional Services (Can skip - see OPTIONAL_FEATURES.md):**
+```env
+# Email - OPTIONAL (OTPs show in console without this)
+# SMTP_HOST=smtp.gmail.com
+# SMTP_USER=your-email@gmail.com
+# SMTP_PASSWORD=your-app-password
+
+# Payments, SMS, Images - All OPTIONAL
+# See OPTIONAL_FEATURES.md for details
+```
+
+📝 **Note:** Email is NOT required! OTPs show in console logs during development.
 ```
 
 ### Frontend (.env)

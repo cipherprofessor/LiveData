@@ -184,6 +184,11 @@ JWT_REFRESH_SECRET=your-super-secret-refresh-key-change-this-in-production-min-3
 JWT_EXPIRES_IN=15m
 JWT_REFRESH_EXPIRES_IN=7d
 
+# Email Verification Requirement
+# Set to 'false' for development (users can login without email verification)
+# Set to 'true' for production (users must verify email before login)
+REQUIRE_EMAIL_VERIFICATION=false
+
 # Email Configuration (Optional - for production)
 # SENDGRID_API_KEY=your-sendgrid-api-key
 # EMAIL_FROM=noreply@skillswap.in

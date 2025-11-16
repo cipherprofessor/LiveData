@@ -1,8 +1,11 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 import Sidebar from './Sidebar';
-import { Bell, Search, LogOut, User } from 'lucide-react';
-import { useState } from 'react';
+import SearchBar from './SearchBar';
+import Breadcrumbs from './Breadcrumbs';
+import { Bell, LogOut, User } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import notificationService from '../services/notification.service';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -12,6 +15,22 @@ export default function Layout({ children }: LayoutProps) {
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(0);
+
+  useEffect(() => {
+    // Fetch notification count on mount
+    const fetchNotificationCount = async () => {
+      const count = await notificationService.getUnreadCount();
+      setNotificationCount(count);
+    };
+
+    fetchNotificationCount();
+
+    // Poll every 30 seconds for updates
+    const interval = setInterval(fetchNotificationCount, 30000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -30,26 +49,21 @@ export default function Layout({ children }: LayoutProps) {
           <div className="px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex items-center justify-between">
               {/* Search Bar */}
-              <div className="flex-1 max-w-2xl">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
-                  <input
-                    type="text"
-                    placeholder="Search skills, users, or swaps..."
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-              </div>
+              <SearchBar />
 
               {/* Right Side: Notifications & User Menu */}
               <div className="flex items-center space-x-4 ml-4">
                 {/* Notifications */}
                 <Link
                   to="/settings/notifications"
-                  className="relative p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                  className="relative p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors group"
                 >
                   <Bell className="h-6 w-6" />
-                  <span className="absolute top-1 right-1 block h-2 w-2 rounded-full bg-red-500 ring-2 ring-white" />
+                  {notificationCount > 0 && (
+                    <span className="absolute -top-1 -right-1 flex items-center justify-center h-5 w-5 text-xs font-bold text-white bg-red-500 rounded-full ring-2 ring-white dark:ring-gray-800">
+                      {notificationCount > 9 ? '9+' : notificationCount}
+                    </span>
+                  )}
                 </Link>
 
                 {/* User Menu */}
@@ -123,6 +137,10 @@ export default function Layout({ children }: LayoutProps) {
 
         {/* Main Content */}
         <main className="p-4 sm:p-6 lg:p-8">
+          {/* Breadcrumbs */}
+          <Breadcrumbs />
+
+          {/* Page Content */}
           {children}
         </main>
       </div>

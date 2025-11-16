@@ -26,6 +26,7 @@ import reviewRoutes from './routes/review.routes';
 import chatRoutes from './routes/chat.routes';
 import gamificationRoutes from './routes/gamification.routes';
 import eventRoutes from './routes/event.routes';
+import connectionRoutes from './routes/connection.routes';
 
 // Import services
 import { chatService } from './services/chat.service';
@@ -72,6 +73,7 @@ app.use(`/api/${API_VERSION}/reviews`, reviewRoutes);
 app.use(`/api/${API_VERSION}/chat`, chatRoutes);
 app.use(`/api/${API_VERSION}/gamification`, gamificationRoutes);
 app.use(`/api/${API_VERSION}/events`, eventRoutes);
+app.use(`/api/${API_VERSION}/connections`, connectionRoutes);
 
 // Socket.IO connection handling with Chat support
 io.on('connection', (socket) => {

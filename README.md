@@ -54,6 +54,8 @@ SkillSwap India enables users to **learn new skills for free** by trading skills
 ## 🚀 Quick Start (5 Minutes)
 
 ### Prerequisites
+
+**Required:**
 - **Node.js** 18+ ([Download](https://nodejs.org/))
 - **Docker Desktop** ([Download](https://www.docker.com/products/docker-desktop))
 - **Git**

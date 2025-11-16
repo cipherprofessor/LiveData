@@ -29,7 +29,7 @@ import {
   getEventTypeLabel,
   getEventTypeIcon,
 } from '../services/event.service';
-import { getAllSkills } from '../services/skill.service';
+import skillsService from '../services/skills.service';
 
 interface EventFormProps {
   event?: Event;
@@ -73,7 +73,7 @@ export default function EventForm({ event, onSuccess, onCancel }: EventFormProps
   const loadSkills = async () => {
     try {
       setIsLoadingSkills(true);
-      const response = await getAllSkills();
+      const response = await skillsService.getAllSkills();
       setSkills(response.skills);
     } catch (error) {
       console.error('Failed to load skills:', error);

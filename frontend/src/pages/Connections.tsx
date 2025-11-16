@@ -32,7 +32,7 @@ import {
   formatConnectionDate,
   getUserLocation,
 } from '../services/connection.service';
-import useAuthStore from '../stores/auth.store';
+import { useAuthStore } from '../stores/authStore';
 
 type TabType = 'following' | 'followers' | 'suggestions' | 'search';
 

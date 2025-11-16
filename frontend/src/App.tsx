@@ -13,6 +13,15 @@ const ProfilePage = lazy(() => import('./pages/ProfilePage'));
 const MatchesPage = lazy(() => import('./pages/MatchesPage'));
 const SwapsPage = lazy(() => import('./pages/SwapsPage'));
 const SkillsPage = lazy(() => import('./pages/SkillsPage'));
+const ConnectionsPage = lazy(() => import('./pages/Connections'));
+const GamificationPage = lazy(() => import('./pages/GamificationDashboard'));
+const EventDetailsPage = lazy(() => import('./pages/EventDetails'));
+const PricingPage = lazy(() => import('./pages/Pricing'));
+const SubscriptionPage = lazy(() => import('./pages/SubscriptionDashboard'));
+const NotificationPrefsPage = lazy(() => import('./pages/NotificationPreferences'));
+const AdminDashboardPage = lazy(() => import('./pages/AdminDashboard'));
+const AdminUsersPage = lazy(() => import('./pages/AdminUsers'));
+const AdminModerationPage = lazy(() => import('./pages/AdminModeration'));
 
 function App() {
   return (
@@ -62,6 +71,74 @@ function App() {
           element={
             <ProtectedRoute>
               <SkillsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/connections"
+          element={
+            <ProtectedRoute>
+              <ConnectionsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/gamification"
+          element={
+            <ProtectedRoute>
+              <GamificationPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/events/:eventId"
+          element={
+            <ProtectedRoute>
+              <EventDetailsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/pricing"
+          element={<PricingPage />}
+        />
+        <Route
+          path="/subscription"
+          element={
+            <ProtectedRoute>
+              <SubscriptionPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/settings/notifications"
+          element={
+            <ProtectedRoute>
+              <NotificationPrefsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <AdminDashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/users"
+          element={
+            <ProtectedRoute>
+              <AdminUsersPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/moderation"
+          element={
+            <ProtectedRoute>
+              <AdminModerationPage />
             </ProtectedRoute>
           }
         />

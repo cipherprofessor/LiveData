@@ -38,7 +38,7 @@ import {
   getPaymentStatusColor,
   getSubscriptionStatusColor,
 } from '../services/subscription.service';
-import useAuthStore from '../stores/auth.store';
+import { useAuthStore } from '../stores/authStore';
 
 type TabType = 'overview' | 'payments' | 'invoices';
 

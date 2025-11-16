@@ -48,6 +48,35 @@ enum NotificationType {
   SYSTEM
 }
 
+enum ReportType {
+  USER
+  REVIEW
+  MESSAGE
+  EVENT
+  PROFILE_CONTENT
+  SPAM
+  HARASSMENT
+  INAPPROPRIATE_CONTENT
+  OTHER
+}
+
+enum ReportStatus {
+  PENDING
+  UNDER_REVIEW
+  RESOLVED
+  DISMISSED
+}
+
+enum ModeratorActionType {
+  BAN_USER
+  SUSPEND_USER
+  WARN_USER
+  DELETE_CONTENT
+  DISMISS_REPORT
+  VERIFY_USER
+  REMOVE_SUBSCRIPTION
+}
+
 // Models
 model User {
   userId            String        @id @default(uuid()) @map("id")
@@ -80,18 +109,26 @@ model User {
   updatedAt         DateTime      @updatedAt
 
   // Relations
-  skills          UserSkill[]
-  swapsInitiated  Swap[]        @relation("SwapInitiator")
-  swapsReceived   Swap[]        @relation("SwapReceiver")
-  reviews         Review[]      @relation("ReviewAuthor")
-  reviewsReceived Review[]      @relation("ReviewReceiver")
-  badges          UserBadge[]
-  connections     Connection[]  @relation("UserConnections")
-  connectedBy     Connection[]  @relation("ConnectedUsers")
-  messages        Message[]     @relation("MessageSender")
-  notifications   Notification[]
-  events          EventAttendance[]
-  auditLogs       AuditLog[]
+  skills                 UserSkill[]
+  swapsInitiated         Swap[]                  @relation("SwapInitiator")
+  swapsReceived          Swap[]                  @relation("SwapReceiver")
+  reviews                Review[]                @relation("ReviewAuthor")
+  reviewsReceived        Review[]                @relation("ReviewReceiver")
+  badges                 UserBadge[]
+  connections            Connection[]            @relation("UserConnections")
+  connectedBy            Connection[]            @relation("ConnectedUsers")
+  messages               Message[]               @relation("MessageSender")
+  notifications          Notification[]
+  notificationPreferences NotificationPreferences?
+  eventsOrganized        Event[]                 @relation("EventOrganizer")
+  eventsAttending        EventAttendance[]
+  subscription           UserSubscription?
+  payments               Payment[]
+  invoices               Invoice[]
+  auditLogs              AuditLog[]
+  reportsCreated         Report[]                @relation("ReportCreator")
+  reportsReceived        Report[]                @relation("ReportedUser")
+  moderatorActions       ModeratorAction[]
 
   @@index([email])
   @@index([city, state])
@@ -127,6 +164,7 @@ model Skill {
 
   category    SkillCategory @relation(fields: [categoryId], references: [categoryId], onDelete: Cascade)
   userSkills  UserSkill[]
+  events      Event[]
 
   @@index([categoryId])
   @@index([name])
@@ -303,6 +341,25 @@ enum MessageType {
   SYSTEM
 }
 
+enum EventType {
+  WORKSHOP
+  MEETUP
+  WEBINAR
+  SKILL_EXCHANGE
+  STUDY_GROUP
+  NETWORKING
+  SEMINAR
+  OTHER
+}
+
+enum EventStatus {
+  DRAFT
+  PUBLISHED
+  ONGOING
+  COMPLETED
+  CANCELLED
+}
+
 model Message {
   messageId       String      @id @default(uuid()) @map("id")
   conversationId  String      // For grouping messages between two users
@@ -337,23 +394,37 @@ model Message {
 }
 
 model Event {
-  eventId     String    @id @default(uuid()) @map("id")
-  title       String
-  description String
-  imageUrl    String?
-  startTime   DateTime
-  endTime     DateTime
-  location    String?
-  isOnline    Boolean   @default(false)
-  maxAttendees Int?
-  isActive    Boolean   @default(true)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  eventId       String      @id @default(uuid()) @map("id")
+  organizerId   String
+  title         String
+  description   String
+  imageUrl      String?
+  eventType     EventType   @default(OTHER)
+  status        EventStatus @default(DRAFT)
+  startTime     DateTime
+  endTime       DateTime
+  location      String?     // General location
+  venue         String?     // Detailed venue info
+  city          String?
+  state         String?
+  isOnline      Boolean     @default(false)
+  meetingLink   String?     // For online events (Zoom, Google Meet, etc.)
+  skillId       String?     // Related skill (optional)
+  maxAttendees  Int?
+  isActive      Boolean     @default(true)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 
-  attendees   EventAttendance[]
+  organizer     User            @relation("EventOrganizer", fields: [organizerId], references: [userId], onDelete: Cascade)
+  skill         Skill?          @relation(fields: [skillId], references: [skillId], onDelete: SetNull)
+  attendees     EventAttendance[]
 
+  @@index([organizerId])
   @@index([startTime])
+  @@index([status])
+  @@index([eventType])
   @@index([isActive])
+  @@index([city, state])
   @@map("events")
 }
 
@@ -391,6 +462,54 @@ model Notification {
   @@map("notifications")
 }
 
+model NotificationPreferences {
+  preferenceId           String   @id @default(uuid()) @map("id")
+  userId                 String   @unique
+
+  // Email Notifications
+  emailEnabled           Boolean  @default(true)
+  emailSwapRequest       Boolean  @default(true)
+  emailSwapAccepted      Boolean  @default(true)
+  emailSwapRejected      Boolean  @default(false)
+  emailSwapCompleted     Boolean  @default(true)
+  emailMessage           Boolean  @default(true)
+  emailBadgeEarned       Boolean  @default(true)
+  emailEventReminder     Boolean  @default(true)
+  emailSystem            Boolean  @default(true)
+
+  // In-App Notifications
+  inAppEnabled           Boolean  @default(true)
+  inAppSwapRequest       Boolean  @default(true)
+  inAppSwapAccepted      Boolean  @default(true)
+  inAppSwapRejected      Boolean  @default(true)
+  inAppSwapCompleted     Boolean  @default(true)
+  inAppMessage           Boolean  @default(true)
+  inAppBadgeEarned       Boolean  @default(true)
+  inAppEventReminder     Boolean  @default(true)
+  inAppSystem            Boolean  @default(true)
+
+  // Email Digest
+  digestEnabled          Boolean  @default(false)
+  digestFrequency        DigestFrequency @default(WEEKLY)
+  digestDay              Int?     // Day of week for weekly (0=Sunday, 6=Saturday)
+  digestHour             Int      @default(9) // Hour of day (0-23)
+  lastDigestSent         DateTime?
+
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  user                   User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("notification_preferences")
+}
+
+enum DigestFrequency {
+  DAILY
+  WEEKLY
+  MONTHLY
+}
+
 model AuditLog {
   logId       String   @id @default(uuid()) @map("id")
   userId      String?
@@ -409,4 +528,241 @@ model AuditLog {
   @@index([entity])
   @@index([createdAt])
   @@map("audit_logs")
+}
+
+// Subscription & Payment Models
+
+enum SubscriptionTier {
+  FREE
+  BASIC
+  PRO
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELLED
+  EXPIRED
+  PAYMENT_FAILED
+  TRIAL
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  RAZORPAY
+  CARD
+  UPI
+  NET_BANKING
+  WALLET
+}
+
+model UserSubscription {
+  subscriptionId       String             @id @default(uuid()) @map("id")
+  userId               String             @unique
+  tier                 SubscriptionTier   @default(FREE)
+  status               SubscriptionStatus @default(ACTIVE)
+
+  // Billing
+  amount               Float              @default(0)
+  currency             String             @default("INR")
+  billingCycle         String             @default("MONTHLY") // MONTHLY, YEARLY
+
+  // Dates
+  startDate            DateTime           @default(now())
+  currentPeriodStart   DateTime           @default(now())
+  currentPeriodEnd     DateTime?
+  trialEnd             DateTime?
+  cancelAt             DateTime?
+  cancelledAt          DateTime?
+
+  // Auto-renewal
+  autoRenew            Boolean            @default(true)
+
+  // Razorpay
+  razorpaySubscriptionId String?          @unique
+  razorpayCustomerId     String?
+
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  user                 User               @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([tier])
+  @@index([status])
+  @@index([currentPeriodEnd])
+  @@map("user_subscriptions")
+}
+
+model Payment {
+  paymentId              String        @id @default(uuid()) @map("id")
+  userId                 String
+
+  // Payment details
+  amount                 Float
+  currency               String        @default("INR")
+  status                 PaymentStatus @default(PENDING)
+  paymentMethod          PaymentMethod @default(RAZORPAY)
+
+  // Razorpay
+  razorpayPaymentId      String?       @unique
+  razorpayOrderId        String?
+  razorpaySignature      String?
+
+  // Description
+  description            String?
+  subscriptionTier       SubscriptionTier?
+
+  // Metadata
+  metadata               Json?
+  failureReason          String?
+
+  // Dates
+  paidAt                 DateTime?
+  refundedAt             DateTime?
+  createdAt              DateTime      @default(now())
+  updatedAt              DateTime      @updatedAt
+
+  user                   User          @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  invoice                Invoice?
+
+  @@index([userId])
+  @@index([status])
+  @@index([razorpayPaymentId])
+  @@index([createdAt])
+  @@map("payments")
+}
+
+model Invoice {
+  invoiceId              String             @id @default(uuid()) @map("id")
+  userId                 String
+  paymentId              String             @unique
+
+  // Invoice details
+  invoiceNumber          String             @unique
+  amount                 Float
+  tax                    Float              @default(0)
+  discount               Float              @default(0)
+  total                  Float
+  currency               String             @default("INR")
+
+  // Period
+  periodStart            DateTime
+  periodEnd              DateTime
+
+  // Subscription
+  subscriptionTier       SubscriptionTier
+
+  // Status
+  isPaid                 Boolean            @default(false)
+  paidAt                 DateTime?
+
+  // PDF
+  pdfUrl                 String?
+
+  // Dates
+  dueDate                DateTime
+  createdAt              DateTime           @default(now())
+  updatedAt              DateTime           @updatedAt
+
+  user                   User               @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  payment                Payment            @relation(fields: [paymentId], references: [paymentId], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([invoiceNumber])
+  @@index([isPaid])
+  @@index([createdAt])
+  @@map("invoices")
+}
+
+// Content Moderation & Admin Models
+
+model Report {
+  reportId           String        @id @default(uuid()) @map("id")
+  reporterId         String
+  reportedUserId     String?
+
+  // Report details
+  type               ReportType
+  status             ReportStatus  @default(PENDING)
+  reason             String
+  description        String?
+  evidence           String?       // JSON array of URLs/screenshots
+
+  // Content references
+  reviewId           String?
+  messageId          String?
+  eventId            String?
+
+  // Resolution
+  resolvedBy         String?
+  resolvedAt         DateTime?
+  resolution         String?       // Moderator notes
+
+  // Timestamps
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  // Relations
+  reporter           User          @relation("ReportCreator", fields: [reporterId], references: [userId], onDelete: Cascade)
+  reportedUser       User?         @relation("ReportedUser", fields: [reportedUserId], references: [userId], onDelete: SetNull)
+  moderatorActions   ModeratorAction[]
+
+  @@index([reporterId])
+  @@index([reportedUserId])
+  @@index([status])
+  @@index([type])
+  @@index([createdAt])
+  @@map("reports")
+}
+
+model ModeratorAction {
+  actionId           String                @id @default(uuid()) @map("id")
+  moderatorId        String
+  reportId           String?
+
+  // Action details
+  actionType         ModeratorActionType
+  targetUserId       String?
+  targetContentId    String?               // reviewId, messageId, eventId, etc.
+  targetContentType  String?               // 'review', 'message', 'event', etc.
+
+  // Details
+  reason             String
+  notes              String?
+  duration           Int?                  // For suspensions (in days)
+
+  // Timestamps
+  createdAt          DateTime              @default(now())
+
+  // Relations
+  moderator          User                  @relation(fields: [moderatorId], references: [userId], onDelete: Cascade)
+  report             Report?               @relation(fields: [reportId], references: [reportId], onDelete: SetNull)
+
+  @@index([moderatorId])
+  @@index([reportId])
+  @@index([actionType])
+  @@index([targetUserId])
+  @@index([createdAt])
+  @@map("moderator_actions")
+}
+
+model AdminSettings {
+  settingId          String        @id @default(uuid()) @map("id")
+  key                String        @unique
+  value              String        // JSON stringified value
+  category           String        // 'general', 'moderation', 'payments', 'features', etc.
+  description        String?
+  updatedBy          String?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  @@index([category])
+  @@index([key])
+  @@map("admin_settings")
 }

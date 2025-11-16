@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { query, param } from 'express-validator';
 import { notificationService } from '../services/notification.service';
 import { authenticate } from '../middleware/auth';
+import * as notificationPreferencesController from './notification-preferences.controller';
 
 const router = Router();
 
@@ -107,5 +108,33 @@ router.put('/mark-all-read', async (req, res, next) => {
     next(error);
   }
 });
+
+/**
+ * Notification Preferences Routes
+ */
+
+// GET /api/v1/notifications/preferences
+router.get('/preferences', notificationPreferencesController.getPreferences);
+
+// PUT /api/v1/notifications/preferences
+router.put('/preferences', notificationPreferencesController.updatePreferences);
+
+// POST /api/v1/notifications/preferences/enable-all
+router.post(
+  '/preferences/enable-all',
+  notificationPreferencesController.enableAllNotifications
+);
+
+// POST /api/v1/notifications/preferences/disable-all
+router.post(
+  '/preferences/disable-all',
+  notificationPreferencesController.disableAllNotifications
+);
+
+// POST /api/v1/notifications/preferences/reset
+router.post('/preferences/reset', notificationPreferencesController.resetToDefaults);
+
+// GET /api/v1/notifications/preferences/stats
+router.get('/preferences/stats', notificationPreferencesController.getNotificationStats);
 
 export default router;

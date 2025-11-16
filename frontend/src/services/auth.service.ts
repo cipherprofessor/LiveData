@@ -20,7 +20,7 @@ export interface AuthResponse {
   message: string;
   data: {
     user: User;
-    token: string;
+    accessToken: string;  // Backend returns "accessToken"
     refreshToken: string;
   };
 }
@@ -77,7 +77,7 @@ export const authService = {
   },
 
   // Refresh token
-  async refreshToken(refreshToken: string): Promise<{ success: boolean; data: { token: string } }> {
+  async refreshToken(refreshToken: string): Promise<{ success: boolean; data: { accessToken: string } }> {
     const response = await api.post('/auth/refresh', { refreshToken });
     return response.data;
   },

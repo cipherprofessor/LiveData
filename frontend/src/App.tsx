@@ -23,6 +23,7 @@ const NotificationPrefsPage = lazy(() => import('./pages/NotificationPreferences
 const AdminDashboardPage = lazy(() => import('./pages/AdminDashboard'));
 const AdminUsersPage = lazy(() => import('./pages/AdminUsers'));
 const AdminModerationPage = lazy(() => import('./pages/AdminModeration'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 function App() {
   return (
@@ -196,6 +197,9 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          {/* 404 Not Found - Catch all unmatched routes */}
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
     </>

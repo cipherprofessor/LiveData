@@ -20,7 +20,10 @@ import {
   Home,
   Menu,
   X,
+  Moon,
+  Sun,
 } from 'lucide-react';
+import { useThemeStore } from '../stores/themeStore';
 
 interface NavItem {
   name: string;
@@ -38,6 +41,7 @@ export default function Sidebar() {
   const location = useLocation();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const { theme, toggleTheme } = useThemeStore();
 
   const navSections: NavSection[] = [
     {
@@ -92,13 +96,13 @@ export default function Sidebar() {
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
       {/* Logo */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-200">
+      <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
         {!isCollapsed && (
           <Link to="/dashboard" className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-lg">S</span>
             </div>
-            <span className="text-xl font-bold text-gray-900">SkillSwap</span>
+            <span className="text-xl font-bold text-gray-900 dark:text-white">SkillSwap</span>
           </Link>
         )}
         {isCollapsed && (
@@ -115,11 +119,11 @@ export default function Sidebar() {
         {navSections.map((section) => (
           <div key={section.title}>
             {!isCollapsed && (
-              <h3 className="px-3 mb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              <h3 className="px-3 mb-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                 {section.title}
               </h3>
             )}
-            {isCollapsed && <div className="border-t border-gray-200 my-2" />}
+            {isCollapsed && <div className="border-t border-gray-200 dark:border-gray-700 my-2" />}
             <div className="space-y-1">
               {section.items.map((item) => {
                 const Icon = item.icon;
@@ -131,8 +135,8 @@ export default function Sidebar() {
                     onClick={() => setIsMobileOpen(false)}
                     className={`flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
                       active
-                        ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-700'
-                        : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                        ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border-l-4 border-blue-700 dark:border-blue-500'
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white'
                     } ${isCollapsed ? 'justify-center' : ''}`}
                     title={isCollapsed ? item.name : ''}
                   >
@@ -141,7 +145,7 @@ export default function Sidebar() {
                       <span className="flex-1">{item.name}</span>
                     )}
                     {!isCollapsed && item.badge && (
-                      <span className="ml-auto inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      <span className="ml-auto inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
                         {item.badge}
                       </span>
                     )}
@@ -153,11 +157,36 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      {/* Collapse Toggle (Desktop Only) */}
-      <div className="hidden md:block p-4 border-t border-gray-200">
+      {/* Theme Toggle & Collapse Toggle (Desktop Only) */}
+      <div className="hidden md:block p-4 border-t border-gray-200 dark:border-gray-700 space-y-2">
+        {/* Theme Toggle */}
+        <button
+          onClick={toggleTheme}
+          className="w-full flex items-center justify-center px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+          title={isCollapsed ? (theme === 'dark' ? 'Light Mode' : 'Dark Mode') : ''}
+        >
+          {isCollapsed ? (
+            theme === 'dark' ? (
+              <Sun className="h-5 w-5 text-yellow-500" />
+            ) : (
+              <Moon className="h-5 w-5 text-indigo-600" />
+            )
+          ) : (
+            <>
+              {theme === 'dark' ? (
+                <Sun className="mr-2 h-5 w-5 text-yellow-500" />
+              ) : (
+                <Moon className="mr-2 h-5 w-5 text-indigo-600" />
+              )}
+              <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
+            </>
+          )}
+        </button>
+
+        {/* Collapse Toggle */}
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="w-full flex items-center justify-center px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+          className="w-full flex items-center justify-center px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
         >
           {isCollapsed ? (
             <ChevronRight className="h-5 w-5" />
@@ -177,12 +206,12 @@ export default function Sidebar() {
       {/* Mobile Menu Button */}
       <button
         onClick={() => setIsMobileOpen(!isMobileOpen)}
-        className="md:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-lg shadow-lg hover:bg-gray-50"
+        className="md:hidden fixed top-4 left-4 z-50 p-2 bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:bg-gray-50 dark:hover:bg-gray-700"
       >
         {isMobileOpen ? (
-          <X className="h-6 w-6 text-gray-700" />
+          <X className="h-6 w-6 text-gray-700 dark:text-gray-300" />
         ) : (
-          <Menu className="h-6 w-6 text-gray-700" />
+          <Menu className="h-6 w-6 text-gray-700 dark:text-gray-300" />
         )}
       </button>
 
@@ -196,7 +225,7 @@ export default function Sidebar() {
 
       {/* Mobile Sidebar */}
       <aside
-        className={`md:hidden fixed top-0 left-0 z-40 h-full bg-white shadow-xl transition-transform duration-300 ${
+        className={`md:hidden fixed top-0 left-0 z-40 h-full bg-white dark:bg-gray-800 shadow-xl transition-transform duration-300 ${
           isMobileOpen ? 'translate-x-0' : '-translate-x-full'
         } w-64`}
       >
@@ -205,7 +234,7 @@ export default function Sidebar() {
 
       {/* Desktop Sidebar */}
       <aside
-        className={`hidden md:block fixed top-0 left-0 h-full bg-white shadow-lg transition-all duration-300 ${
+        className={`hidden md:block fixed top-0 left-0 h-full bg-white dark:bg-gray-800 shadow-lg transition-all duration-300 ${
           isCollapsed ? 'w-20' : 'w-64'
         }`}
       >

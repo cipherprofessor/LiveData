@@ -22,6 +22,7 @@ import {
   Share2,
   BookmarkPlus,
   RefreshCw,
+  Tag,
 } from 'lucide-react';
 import {
   getEventById,
@@ -41,7 +42,7 @@ import {
   getAvailableSpots,
   isPast,
 } from '../services/event.service';
-import useAuthStore from '../stores/auth.store';
+import { useAuthStore } from '../stores/authStore';
 
 export default function EventDetails() {
   const { eventId } = useParams<{ eventId: string }>();

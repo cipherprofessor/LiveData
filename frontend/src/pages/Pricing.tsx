@@ -31,7 +31,7 @@ import {
   getYearlySavings,
   getTierGradient,
 } from '../services/subscription.service';
-import useAuthStore from '../stores/auth.store';
+import { useAuthStore } from '../stores/authStore';
 
 export default function Pricing() {
   const navigate = useNavigate();

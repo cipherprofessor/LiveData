@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoadingFallback from './components/LoadingFallback';
+import Layout from './components/Layout';
 
 // Lazy load pages for code splitting
 const HomePage = lazy(() => import('./pages/HomePage'));
@@ -22,6 +23,7 @@ const NotificationPrefsPage = lazy(() => import('./pages/NotificationPreferences
 const AdminDashboardPage = lazy(() => import('./pages/AdminDashboard'));
 const AdminUsersPage = lazy(() => import('./pages/AdminUsers'));
 const AdminModerationPage = lazy(() => import('./pages/AdminModeration'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 function App() {
   return (
@@ -29,119 +31,175 @@ function App() {
       <Toaster position="top-right" />
       <Suspense fallback={<LoadingFallback fullScreen />}>
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          {/* Public Routes (No Layout) */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
 
-        {/* Protected Routes */}
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <DashboardPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute>
-              <ProfilePage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/matches"
-          element={
-            <ProtectedRoute>
-              <MatchesPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/swaps"
-          element={
-            <ProtectedRoute>
-              <SwapsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/skills"
-          element={
-            <ProtectedRoute>
-              <SkillsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/connections"
-          element={
-            <ProtectedRoute>
-              <ConnectionsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/gamification"
-          element={
-            <ProtectedRoute>
-              <GamificationPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/events/:eventId"
-          element={
-            <ProtectedRoute>
-              <EventDetailsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/pricing"
-          element={<PricingPage />}
-        />
-        <Route
-          path="/subscription"
-          element={
-            <ProtectedRoute>
-              <SubscriptionPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/settings/notifications"
-          element={
-            <ProtectedRoute>
-              <NotificationPrefsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute>
-              <AdminDashboardPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/users"
-          element={
-            <ProtectedRoute>
-              <AdminUsersPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/moderation"
-          element={
-            <ProtectedRoute>
-              <AdminModerationPage />
-            </ProtectedRoute>
-          }
-        />
+          {/* Protected Routes (With Layout & Sidebar) */}
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <HomePage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <DashboardPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <ProfilePage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/matches"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <MatchesPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/swaps"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <SwapsPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/skills"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <SkillsPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/connections"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <ConnectionsPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/gamification"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <GamificationPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/events"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <div className="text-center py-12">
+                    <h1 className="text-3xl font-bold text-gray-900">Events</h1>
+                    <p className="mt-4 text-gray-600">Events listing page coming soon!</p>
+                  </div>
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/events/:eventId"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <EventDetailsPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/pricing"
+            element={
+              <Layout>
+                <PricingPage />
+              </Layout>
+            }
+          />
+          <Route
+            path="/subscription"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <SubscriptionPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/settings/notifications"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <NotificationPrefsPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <AdminDashboardPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/users"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <AdminUsersPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/moderation"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <AdminModerationPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          {/* 404 Not Found - Catch all unmatched routes */}
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
     </>

@@ -48,6 +48,35 @@ enum NotificationType {
   SYSTEM
 }
 
+enum ReportType {
+  USER
+  REVIEW
+  MESSAGE
+  EVENT
+  PROFILE_CONTENT
+  SPAM
+  HARASSMENT
+  INAPPROPRIATE_CONTENT
+  OTHER
+}
+
+enum ReportStatus {
+  PENDING
+  UNDER_REVIEW
+  RESOLVED
+  DISMISSED
+}
+
+enum ModeratorActionType {
+  BAN_USER
+  SUSPEND_USER
+  WARN_USER
+  DELETE_CONTENT
+  DISMISS_REPORT
+  VERIFY_USER
+  REMOVE_SUBSCRIPTION
+}
+
 // Models
 model User {
   userId            String        @id @default(uuid()) @map("id")
@@ -97,6 +126,9 @@ model User {
   payments               Payment[]
   invoices               Invoice[]
   auditLogs              AuditLog[]
+  reportsCreated         Report[]                @relation("ReportCreator")
+  reportsReceived        Report[]                @relation("ReportedUser")
+  moderatorActions       ModeratorAction[]
 
   @@index([email])
   @@index([city, state])
@@ -646,4 +678,91 @@ model Invoice {
   @@index([isPaid])
   @@index([createdAt])
   @@map("invoices")
+}
+
+// Content Moderation & Admin Models
+
+model Report {
+  reportId           String        @id @default(uuid()) @map("id")
+  reporterId         String
+  reportedUserId     String?
+
+  // Report details
+  type               ReportType
+  status             ReportStatus  @default(PENDING)
+  reason             String
+  description        String?
+  evidence           String?       // JSON array of URLs/screenshots
+
+  // Content references
+  reviewId           String?
+  messageId          String?
+  eventId            String?
+
+  // Resolution
+  resolvedBy         String?
+  resolvedAt         DateTime?
+  resolution         String?       // Moderator notes
+
+  // Timestamps
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  // Relations
+  reporter           User          @relation("ReportCreator", fields: [reporterId], references: [userId], onDelete: Cascade)
+  reportedUser       User?         @relation("ReportedUser", fields: [reportedUserId], references: [userId], onDelete: SetNull)
+  moderatorActions   ModeratorAction[]
+
+  @@index([reporterId])
+  @@index([reportedUserId])
+  @@index([status])
+  @@index([type])
+  @@index([createdAt])
+  @@map("reports")
+}
+
+model ModeratorAction {
+  actionId           String                @id @default(uuid()) @map("id")
+  moderatorId        String
+  reportId           String?
+
+  // Action details
+  actionType         ModeratorActionType
+  targetUserId       String?
+  targetContentId    String?               // reviewId, messageId, eventId, etc.
+  targetContentType  String?               // 'review', 'message', 'event', etc.
+
+  // Details
+  reason             String
+  notes              String?
+  duration           Int?                  // For suspensions (in days)
+
+  // Timestamps
+  createdAt          DateTime              @default(now())
+
+  // Relations
+  moderator          User                  @relation(fields: [moderatorId], references: [userId], onDelete: Cascade)
+  report             Report?               @relation(fields: [reportId], references: [reportId], onDelete: SetNull)
+
+  @@index([moderatorId])
+  @@index([reportId])
+  @@index([actionType])
+  @@index([targetUserId])
+  @@index([createdAt])
+  @@map("moderator_actions")
+}
+
+model AdminSettings {
+  settingId          String        @id @default(uuid()) @map("id")
+  key                String        @unique
+  value              String        // JSON stringified value
+  category           String        // 'general', 'moderation', 'payments', 'features', etc.
+  description        String?
+  updatedBy          String?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  @@index([category])
+  @@index([key])
+  @@map("admin_settings")
 }

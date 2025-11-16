@@ -29,6 +29,8 @@ import eventRoutes from './routes/event.routes';
 import connectionRoutes from './routes/connection.routes';
 import subscriptionRoutes from './routes/subscription.routes';
 import webhookRoutes from './routes/webhook.routes';
+import adminRoutes from './routes/admin.routes';
+import moderationRoutes from './routes/moderation.routes';
 
 // Import services
 import { chatService } from './services/chat.service';
@@ -78,6 +80,8 @@ app.use(`/api/${API_VERSION}/events`, eventRoutes);
 app.use(`/api/${API_VERSION}/connections`, connectionRoutes);
 app.use(`/api/${API_VERSION}/subscriptions`, subscriptionRoutes);
 app.use(`/api/${API_VERSION}/webhooks`, webhookRoutes);
+app.use(`/api/${API_VERSION}/admin`, adminRoutes);
+app.use(`/api/${API_VERSION}/moderation`, moderationRoutes);
 
 // Socket.IO connection handling with Chat support
 io.on('connection', (socket) => {

@@ -93,6 +93,9 @@ model User {
   notificationPreferences NotificationPreferences?
   eventsOrganized        Event[]                 @relation("EventOrganizer")
   eventsAttending        EventAttendance[]
+  subscription           UserSubscription?
+  payments               Payment[]
+  invoices               Invoice[]
   auditLogs              AuditLog[]
 
   @@index([email])
@@ -493,4 +496,154 @@ model AuditLog {
   @@index([entity])
   @@index([createdAt])
   @@map("audit_logs")
+}
+
+// Subscription & Payment Models
+
+enum SubscriptionTier {
+  FREE
+  BASIC
+  PRO
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELLED
+  EXPIRED
+  PAYMENT_FAILED
+  TRIAL
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  RAZORPAY
+  CARD
+  UPI
+  NET_BANKING
+  WALLET
+}
+
+model UserSubscription {
+  subscriptionId       String             @id @default(uuid()) @map("id")
+  userId               String             @unique
+  tier                 SubscriptionTier   @default(FREE)
+  status               SubscriptionStatus @default(ACTIVE)
+
+  // Billing
+  amount               Float              @default(0)
+  currency             String             @default("INR")
+  billingCycle         String             @default("MONTHLY") // MONTHLY, YEARLY
+
+  // Dates
+  startDate            DateTime           @default(now())
+  currentPeriodStart   DateTime           @default(now())
+  currentPeriodEnd     DateTime?
+  trialEnd             DateTime?
+  cancelAt             DateTime?
+  cancelledAt          DateTime?
+
+  // Auto-renewal
+  autoRenew            Boolean            @default(true)
+
+  // Razorpay
+  razorpaySubscriptionId String?          @unique
+  razorpayCustomerId     String?
+
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  user                 User               @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([tier])
+  @@index([status])
+  @@index([currentPeriodEnd])
+  @@map("user_subscriptions")
+}
+
+model Payment {
+  paymentId              String        @id @default(uuid()) @map("id")
+  userId                 String
+
+  // Payment details
+  amount                 Float
+  currency               String        @default("INR")
+  status                 PaymentStatus @default(PENDING)
+  paymentMethod          PaymentMethod @default(RAZORPAY)
+
+  // Razorpay
+  razorpayPaymentId      String?       @unique
+  razorpayOrderId        String?
+  razorpaySignature      String?
+
+  // Description
+  description            String?
+  subscriptionTier       SubscriptionTier?
+
+  // Metadata
+  metadata               Json?
+  failureReason          String?
+
+  // Dates
+  paidAt                 DateTime?
+  refundedAt             DateTime?
+  createdAt              DateTime      @default(now())
+  updatedAt              DateTime      @updatedAt
+
+  user                   User          @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  invoice                Invoice?
+
+  @@index([userId])
+  @@index([status])
+  @@index([razorpayPaymentId])
+  @@index([createdAt])
+  @@map("payments")
+}
+
+model Invoice {
+  invoiceId              String             @id @default(uuid()) @map("id")
+  userId                 String
+  paymentId              String             @unique
+
+  // Invoice details
+  invoiceNumber          String             @unique
+  amount                 Float
+  tax                    Float              @default(0)
+  discount               Float              @default(0)
+  total                  Float
+  currency               String             @default("INR")
+
+  // Period
+  periodStart            DateTime
+  periodEnd              DateTime
+
+  // Subscription
+  subscriptionTier       SubscriptionTier
+
+  // Status
+  isPaid                 Boolean            @default(false)
+  paidAt                 DateTime?
+
+  // PDF
+  pdfUrl                 String?
+
+  // Dates
+  dueDate                DateTime
+  createdAt              DateTime           @default(now())
+  updatedAt              DateTime           @updatedAt
+
+  user                   User               @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  payment                Payment            @relation(fields: [paymentId], references: [paymentId], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([invoiceNumber])
+  @@index([isPaid])
+  @@index([createdAt])
+  @@map("invoices")
 }

@@ -180,6 +180,7 @@ model Swap {
   initiator         User        @relation("SwapInitiator", fields: [initiatorId], references: [userId], onDelete: Cascade)
   receiver          User        @relation("SwapReceiver", fields: [receiverId], references: [userId], onDelete: Cascade)
   sessions          SwapSession[]
+  reviews           Review[]
 
   @@index([initiatorId])
   @@index([receiverId])
@@ -205,22 +206,48 @@ model SwapSession {
 }
 
 model Review {
-  reviewId    String   @id @default(uuid()) @map("id")
-  studentId   String   @map("authorId")
-  teacherId   String   @map("receiverId")
-  rating      Int      // 1-5
-  comment     String?
-  isPublic    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  reviewId          String       @id @default(uuid()) @map("id")
+  swapId            String
+  studentId         String       @map("authorId")
+  teacherId         String       @map("receiverId")
+  rating            Int          // 1-5 stars
+  comment           String?
+  teachingQuality   Int?         // 1-5 stars (optional detailed rating)
+  communication     Int?         // 1-5 stars (optional detailed rating)
+  punctuality       Int?         // 1-5 stars (optional detailed rating)
+  tags              String[]     @default([]) // e.g., ["patient", "knowledgeable", "helpful"]
+  isPublic          Boolean      @default(true)
+  helpfulCount      Int          @default(0)
+  isEdited          Boolean      @default(false)
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
 
-  student     User     @relation("ReviewAuthor", fields: [studentId], references: [userId], onDelete: Cascade)
-  teacher     User     @relation("ReviewReceiver", fields: [teacherId], references: [userId], onDelete: Cascade)
+  swap              Swap         @relation(fields: [swapId], references: [swapId], onDelete: Cascade)
+  student           User         @relation("ReviewAuthor", fields: [studentId], references: [userId], onDelete: Cascade)
+  teacher           User         @relation("ReviewReceiver", fields: [teacherId], references: [userId], onDelete: Cascade)
+  votes             ReviewVote[]
 
+  @@unique([swapId, studentId]) // One review per student per swap
+  @@index([swapId])
   @@index([studentId])
   @@index([teacherId])
   @@index([rating])
   @@map("reviews")
+}
+
+model ReviewVote {
+  voteId      String   @id @default(uuid()) @map("id")
+  reviewId    String
+  userId      String
+  isHelpful   Boolean  // true for helpful, false for not helpful
+  createdAt   DateTime @default(now())
+
+  review      Review   @relation(fields: [reviewId], references: [reviewId], onDelete: Cascade)
+
+  @@unique([reviewId, userId]) // One vote per user per review
+  @@index([reviewId])
+  @@index([userId])
+  @@map("review_votes")
 }
 
 model Badge {

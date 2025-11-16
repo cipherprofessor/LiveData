@@ -22,6 +22,12 @@ import skillRoutes from './routes/skill.routes';
 import matchRoutes from './routes/match.routes';
 import swapRoutes from './routes/swap.routes';
 import notificationRoutes from './routes/notification.routes';
+import reviewRoutes from './routes/review.routes';
+import chatRoutes from './routes/chat.routes';
+import gamificationRoutes from './routes/gamification.routes';
+
+// Import services
+import { chatService } from './services/chat.service';
 
 const app: Application = express();
 const httpServer = createServer(app);
@@ -61,11 +67,67 @@ app.use(`/api/${API_VERSION}/skills`, skillRoutes);
 app.use(`/api/${API_VERSION}/matches`, matchRoutes);
 app.use(`/api/${API_VERSION}/swaps`, swapRoutes);
 app.use(`/api/${API_VERSION}/notifications`, notificationRoutes);
+app.use(`/api/${API_VERSION}/reviews`, reviewRoutes);
+app.use(`/api/${API_VERSION}/chat`, chatRoutes);
+app.use(`/api/${API_VERSION}/gamification`, gamificationRoutes);
 
-// Socket.IO connection handling
+// Socket.IO connection handling with Chat support
 io.on('connection', (socket) => {
   console.log('New client connected:', socket.id);
 
+  let currentUserId: string | undefined;
+
+  // User authentication for socket
+  socket.on('auth:identify', (data: { userId: string }) => {
+    currentUserId = data.userId;
+    chatService.handleUserConnect(socket, data.userId);
+    socket.emit('auth:identified', { userId: data.userId });
+  });
+
+  // Join a conversation room
+  socket.on('conversation:join', (data: { otherUserId: string }) => {
+    if (!currentUserId) return;
+    const conversationId = chatService.getConversationId(
+      currentUserId,
+      data.otherUserId
+    );
+    socket.join(conversationId);
+    console.log(`Socket ${socket.id} joined conversation ${conversationId}`);
+  });
+
+  // Leave a conversation room
+  socket.on('conversation:leave', (data: { otherUserId: string }) => {
+    if (!currentUserId) return;
+    const conversationId = chatService.getConversationId(
+      currentUserId,
+      data.otherUserId
+    );
+    socket.leave(conversationId);
+    console.log(`Socket ${socket.id} left conversation ${conversationId}`);
+  });
+
+  // Typing indicator - start typing
+  socket.on('typing:start', (data: { receiverId: string }) => {
+    if (!currentUserId) return;
+    chatService.handleTyping(socket, currentUserId, data.receiverId, true);
+  });
+
+  // Typing indicator - stop typing
+  socket.on('typing:stop', (data: { receiverId: string }) => {
+    if (!currentUserId) return;
+    chatService.handleTyping(socket, currentUserId, data.receiverId, false);
+  });
+
+  // Message delivered acknowledgment
+  socket.on('message:delivered', async (data: { messageId: string }) => {
+    try {
+      await chatService.markMessageAsDelivered(data.messageId);
+    } catch (error) {
+      console.error('Error marking message as delivered:', error);
+    }
+  });
+
+  // Generic room join/leave (for backward compatibility)
   socket.on('join-room', (roomId: string) => {
     socket.join(roomId);
     console.log(`Socket ${socket.id} joined room ${roomId}`);
@@ -76,8 +138,10 @@ io.on('connection', (socket) => {
     console.log(`Socket ${socket.id} left room ${roomId}`);
   });
 
+  // Handle disconnection
   socket.on('disconnect', () => {
     console.log('Client disconnected:', socket.id);
+    chatService.handleUserDisconnect(socket, currentUserId);
   });
 });
 

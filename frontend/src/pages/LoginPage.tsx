@@ -35,7 +35,8 @@ export default function LoginPage() {
 
       if (response.success) {
         setUser(response.data.user);
-        setTokens(response.data.token, response.data.refreshToken);
+        // Backend returns "accessToken", store it as "token" for frontend consistency
+        setTokens(response.data.accessToken, response.data.refreshToken);
 
         toast.success('Welcome back!');
 

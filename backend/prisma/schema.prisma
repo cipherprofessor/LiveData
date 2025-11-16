@@ -296,21 +296,43 @@ model Connection {
   @@map("connections")
 }
 
+enum MessageType {
+  TEXT
+  IMAGE
+  FILE
+  SYSTEM
+}
+
 model Message {
-  messageId   String   @id @default(uuid()) @map("id")
-  senderId    String
-  receiverId  String
-  content     String
-  isRead      Boolean  @default(false)
-  readAt      DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  messageId       String      @id @default(uuid()) @map("id")
+  conversationId  String      // For grouping messages between two users
+  senderId        String
+  receiverId      String
+  content         String
+  messageType     MessageType @default(TEXT)
+  imageUrl        String?     // For image messages
+  fileUrl         String?     // For file attachments
+  fileName        String?     // Original file name
+  fileSize        Int?        // File size in bytes
+  isDelivered     Boolean     @default(false)
+  deliveredAt     DateTime?
+  isRead          Boolean     @default(false)
+  readAt          DateTime?
+  replyToId       String?     // For replying to specific messages
+  isDeleted       Boolean     @default(false)
+  deletedAt       DateTime?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
 
-  sender      User     @relation("MessageSender", fields: [senderId], references: [userId], onDelete: Cascade)
+  sender          User        @relation("MessageSender", fields: [senderId], references: [userId], onDelete: Cascade)
+  replyTo         Message?    @relation("MessageReplies", fields: [replyToId], references: [messageId], onDelete: SetNull)
+  replies         Message[]   @relation("MessageReplies")
 
+  @@index([conversationId])
   @@index([senderId])
   @@index([receiverId])
   @@index([isRead])
+  @@index([createdAt])
   @@map("messages")
 }
 

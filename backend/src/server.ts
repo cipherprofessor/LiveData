@@ -194,7 +194,7 @@ httpServer.listen(PORT, () => {
     ║  Environment: ${process.env.NODE_ENV?.padEnd(28) || 'development'.padEnd(28)}║
     ║  Port: ${PORT.toString().padEnd(35)}║
     ║  API Version: ${API_VERSION.padEnd(30)}║
-    ║  Redis: ${(redis.isRedisAvailable() ? 'Connected' : 'Unavailable').padEnd(32)}║
+    ║  ║  Redis: ${(redis.isReady ? 'Connected' : 'Unavailable').padEnd(32)}║
     ╚═══════════════════════════════════════════╝
   `);
 });

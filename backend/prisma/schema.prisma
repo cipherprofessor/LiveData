@@ -766,3 +766,434 @@ model AdminSettings {
   @@index([key])
   @@map("admin_settings")
 }
+
+// ============================================================================
+// TRUST & SAFETY MODELS (SkillSwap Enhancement Roadmap)
+// ============================================================================
+
+enum VerificationStatus {
+  PENDING
+  VERIFIED
+  FAILED
+  EXPIRED
+  REJECTED
+}
+
+enum VerificationType {
+  AADHAAR
+  VIDEO_SELFIE
+  SKILL_TEST
+  PORTFOLIO
+  PEER_ENDORSEMENT
+  BACKGROUND_CHECK
+}
+
+// Aadhaar Verification for Government ID Verification
+model AadhaarVerification {
+  verificationId     String             @id @default(uuid()) @map("id")
+  userId             String             @unique
+  aadhaarLastFour    String             // Store only last 4 digits for security
+  requestId          String             // Third-party API request ID
+  status             VerificationStatus
+  name               String?
+  address            Json?              // Encrypted address data
+  verifiedAt         DateTime?
+  expiresAt          DateTime?
+  failureReason      String?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@map("aadhaar_verifications")
+}
+
+// Video Selfie Verification for Face Matching
+model VideoSelfieVerification {
+  verificationId     String             @id @default(uuid()) @map("id")
+  userId             String
+  videoUrl           String             // S3 URL to encrypted video
+  thumbnailUrl       String?
+  faceMatchScore     Float?             // 0-100 confidence score
+  status             VerificationStatus
+  verifiedAt         DateTime?
+  failureReason      String?
+  moderatorId        String?            // For manual review
+  moderatorNotes     String?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@map("video_selfie_verifications")
+}
+
+// Enhanced Skill Verification System
+model SkillVerification {
+  verificationId      String             @id @default(uuid()) @map("id")
+  userSkillId         String
+  verificationType    VerificationType
+  verificationStatus  VerificationStatus
+  verificationScore   Int?               // 0-100
+  verifiedBy          String?            // UserID or 'SYSTEM' or 'AI'
+  verificationDate    DateTime?
+  verificationProof   Json?              // Certificates, test results, portfolio links
+  expiryDate          DateTime?
+  notes               String?
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+
+  @@index([userSkillId])
+  @@index([verificationType])
+  @@index([verificationStatus])
+  @@map("skill_verifications")
+}
+
+enum RelationType {
+  COLLEAGUE
+  MENTOR
+  STUDENT
+  PEER
+  CLIENT
+  OTHER
+}
+
+// Peer Endorsement Network for Skills
+model SkillEndorsement {
+  endorsementId       String       @id @default(uuid()) @map("id")
+  endorserId          String       // User giving endorsement
+  userSkillId         String       // Skill being endorsed
+  endorsementStrength Int          // 1-5 scale
+  relationship        RelationType
+  endorsementText     String?
+  isVerified          Boolean      @default(false) // Prevents fake endorsement rings
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+
+  @@unique([endorserId, userSkillId]) // One endorsement per endorser per skill
+  @@index([userSkillId])
+  @@index([endorserId])
+  @@map("skill_endorsements")
+}
+
+enum SkillTestDifficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
+}
+
+// AI-Generated Skill Tests
+model SkillTest {
+  testId              String               @id @default(uuid()) @map("id")
+  skillId             String
+  title               String
+  description         String?
+  difficulty          SkillTestDifficulty
+  questions           Json                 // Array of MCQ + practical tasks
+  passingScore        Int                  @default(70)
+  timeLimit           Int                  @default(30) // minutes
+  isActive            Boolean              @default(true)
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+
+  attempts            SkillTestAttempt[]
+
+  @@index([skillId])
+  @@index([difficulty])
+  @@map("skill_tests")
+}
+
+model SkillTestAttempt {
+  attemptId           String       @id @default(uuid()) @map("id")
+  testId              String
+  userId              String
+  userSkillId         String
+  answers             Json         // User's answers
+  score               Int          // 0-100
+  passed              Boolean
+  timeSpent           Int          // seconds
+  certificateUrl      String?      // PDF certificate if passed
+  createdAt           DateTime     @default(now())
+
+  test                SkillTest    @relation(fields: [testId], references: [testId], onDelete: Cascade)
+
+  @@index([testId])
+  @@index([userId])
+  @@index([userSkillId])
+  @@map("skill_test_attempts")
+}
+
+enum DisputeCategory {
+  NO_SHOW
+  POOR_QUALITY
+  BEHAVIOR
+  SCAM
+  SAFETY
+  PAYMENT
+  OTHER
+}
+
+enum DisputeStatus {
+  OPEN
+  UNDER_REVIEW
+  AI_RESOLVED
+  HUMAN_MEDIATION
+  RESOLVED
+  CLOSED
+  APPEALED
+}
+
+// Dispute Resolution System
+model Dispute {
+  disputeId           String           @id @default(uuid()) @map("id")
+  swapId              String
+  reporterId          String
+  reportedUserId      String
+  category            DisputeCategory
+  description         String
+  evidence            Json?            // Screenshots, messages, recordings
+  status              DisputeStatus    @default(OPEN)
+
+  // AI Analysis
+  aiRecommendation    Json?            // AI decision and reasoning
+  aiConfidence        Float?           // 0-100
+
+  // Human Resolution
+  resolution          String?
+  resolvedBy          String?          // ModeratorID
+  resolvedAt          DateTime?
+
+  // Remediation
+  coinsRefunded       Int              @default(0)
+  isReporterBanned    Boolean          @default(false)
+  isReportedBanned    Boolean          @default(false)
+
+  // Appeals
+  appealedAt          DateTime?
+  appealReason        String?
+  appealResolvedBy    String?
+  appealResolvedAt    DateTime?
+
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+
+  @@index([swapId])
+  @@index([reporterId])
+  @@index([reportedUserId])
+  @@index([status])
+  @@index([category])
+  @@map("disputes")
+}
+
+// ============================================================================
+// REAL-TIME CHAT & PRESENCE MODELS
+// ============================================================================
+
+enum ConversationType {
+  DIRECT
+  GROUP
+  SUPPORT
+}
+
+// Conversation Model for Chat
+model Conversation {
+  conversationId      String            @id @default(uuid()) @map("id")
+  conversationType    ConversationType  @default(DIRECT)
+  participantIds      String[]          // Array of userIds
+  lastMessageId       String?
+  lastMessageAt       DateTime?
+  isArchived          Boolean           @default(false)
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+
+  messages            ConversationMessage[]
+
+  @@index([participantIds])
+  @@index([lastMessageAt])
+  @@map("conversations")
+}
+
+// Enhanced Message Model for Real-Time Chat
+model ConversationMessage {
+  messageId           String            @id @default(uuid()) @map("id")
+  conversationId      String
+  senderId            String
+  content             String
+  messageType         MessageType       @default(TEXT)
+  fileUrl             String?
+  fileName            String?
+  fileSize            Int?
+  thumbnailUrl        String?
+  deliveredAt         DateTime?
+  readAt              DateTime?
+  replyToMessageId    String?
+  reactions           Json?             // { "❤️": ["userId1", "userId2"], "👍": ["userId3"] }
+  isEdited            Boolean           @default(false)
+  editedAt            DateTime?
+  isDeleted           Boolean           @default(false)
+  deletedAt           DateTime?
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+
+  conversation        Conversation      @relation(fields: [conversationId], references: [conversationId], onDelete: Cascade)
+
+  @@index([conversationId])
+  @@index([senderId])
+  @@index([createdAt])
+  @@map("conversation_messages")
+}
+
+// User Online Presence Tracking
+model UserPresence {
+  presenceId          String       @id @default(uuid()) @map("id")
+  userId              String       @unique
+  isOnline            Boolean      @default(false)
+  lastSeen            DateTime     @default(now())
+  socketId            String?      // Current Socket.IO connection ID
+  updatedAt           DateTime     @updatedAt
+
+  @@index([userId])
+  @@index([isOnline])
+  @@map("user_presence")
+}
+
+// Typing Indicators
+model TypingIndicator {
+  indicatorId         String       @id @default(uuid()) @map("id")
+  conversationId      String
+  userId              String
+  isTyping            Boolean      @default(true)
+  createdAt           DateTime     @default(now())
+  expiresAt           DateTime     // Auto-expire after 5 seconds
+
+  @@unique([conversationId, userId])
+  @@index([conversationId])
+  @@index([expiresAt])
+  @@map("typing_indicators")
+}
+
+// ============================================================================
+// PAYMENT & MONETIZATION MODELS
+// ============================================================================
+
+enum CoinTransactionType {
+  PURCHASE
+  EARNED
+  SPENT
+  REFUND
+  BONUS
+  PENALTY
+}
+
+// SkillCoin Transaction History
+model CoinTransaction {
+  transactionId       String               @id @default(uuid()) @map("id")
+  userId              String
+  amount              Int                  // Positive for credit, negative for debit
+  transactionType     CoinTransactionType
+  description         String
+  balanceBefore       Int
+  balanceAfter        Int
+  razorpayPaymentId   String?              // If purchased with real money
+  metadata            Json?
+  createdAt           DateTime             @default(now())
+
+  @@index([userId])
+  @@index([transactionType])
+  @@index([createdAt])
+  @@map("coin_transactions")
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  REFUNDED
+  DISPUTED
+}
+
+// Premium Skills Marketplace
+model PremiumSkill {
+  premiumSkillId      String       @id @default(uuid()) @map("id")
+  userId              String
+  skillId             String
+  hourlyRate          Float        // in INR
+  minDuration         Int          // in minutes
+  maxDuration         Int          // in minutes
+  availability        Json         // Weekly schedule
+  rating              Float?
+  totalEarnings       Float        @default(0)
+  totalBookings       Int          @default(0)
+  isActive            Boolean      @default(true)
+  description         String?
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+
+  bookings            PremiumBooking[]
+
+  @@index([userId])
+  @@index([skillId])
+  @@index([isActive])
+  @@index([hourlyRate])
+  @@map("premium_skills")
+}
+
+// Premium Skill Bookings
+model PremiumBooking {
+  bookingId           String         @id @default(uuid()) @map("id")
+  studentId           String
+  premiumSkillId      String
+  scheduledAt         DateTime
+  duration            Int            // in minutes
+  amount              Float          // Total amount
+  platformFee         Float          // 20% commission
+  teacherEarnings     Float          // 80% to teacher
+  status              BookingStatus  @default(PENDING)
+  razorpayPaymentId   String?
+  razorpayOrderId     String?
+
+  // Session details
+  meetingLink         String?
+  completedAt         DateTime?
+  cancelledAt         DateTime?
+  cancellationReason  String?
+  refundAmount        Float?
+  refundedAt          DateTime?
+
+  // Review
+  reviewId            String?
+
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+
+  premiumSkill        PremiumSkill   @relation(fields: [premiumSkillId], references: [premiumSkillId], onDelete: Cascade)
+
+  @@index([studentId])
+  @@index([premiumSkillId])
+  @@index([status])
+  @@index([scheduledAt])
+  @@map("premium_bookings")
+}
+
+// Enhanced Subscription Plans (Premium & Pro)
+enum EnhancedSubscriptionTier {
+  FREE
+  PREMIUM
+  PRO
+}
+
+model SubscriptionFeature {
+  featureId           String                     @id @default(uuid()) @map("id")
+  tier                EnhancedSubscriptionTier
+  featureName         String
+  featureValue        String                     // e.g., "unlimited", "5 hours/month", "true", "false"
+  description         String?
+  isActive            Boolean                    @default(true)
+  createdAt           DateTime                   @default(now())
+  updatedAt           DateTime                   @updatedAt
+
+  @@index([tier])
+  @@map("subscription_features")
+}

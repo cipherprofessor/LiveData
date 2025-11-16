@@ -24,6 +24,7 @@ import swapRoutes from './routes/swap.routes';
 import notificationRoutes from './routes/notification.routes';
 import reviewRoutes from './routes/review.routes';
 import chatRoutes from './routes/chat.routes';
+import gamificationRoutes from './routes/gamification.routes';
 
 // Import services
 import { chatService } from './services/chat.service';
@@ -68,6 +69,7 @@ app.use(`/api/${API_VERSION}/swaps`, swapRoutes);
 app.use(`/api/${API_VERSION}/notifications`, notificationRoutes);
 app.use(`/api/${API_VERSION}/reviews`, reviewRoutes);
 app.use(`/api/${API_VERSION}/chat`, chatRoutes);
+app.use(`/api/${API_VERSION}/gamification`, gamificationRoutes);
 
 // Socket.IO connection handling with Chat support
 io.on('connection', (socket) => {

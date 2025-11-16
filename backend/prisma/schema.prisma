@@ -80,18 +80,19 @@ model User {
   updatedAt         DateTime      @updatedAt
 
   // Relations
-  skills          UserSkill[]
-  swapsInitiated  Swap[]        @relation("SwapInitiator")
-  swapsReceived   Swap[]        @relation("SwapReceiver")
-  reviews         Review[]      @relation("ReviewAuthor")
-  reviewsReceived Review[]      @relation("ReviewReceiver")
-  badges          UserBadge[]
-  connections     Connection[]  @relation("UserConnections")
-  connectedBy     Connection[]  @relation("ConnectedUsers")
-  messages        Message[]     @relation("MessageSender")
-  notifications   Notification[]
-  events          EventAttendance[]
-  auditLogs       AuditLog[]
+  skills                 UserSkill[]
+  swapsInitiated         Swap[]                  @relation("SwapInitiator")
+  swapsReceived          Swap[]                  @relation("SwapReceiver")
+  reviews                Review[]                @relation("ReviewAuthor")
+  reviewsReceived        Review[]                @relation("ReviewReceiver")
+  badges                 UserBadge[]
+  connections            Connection[]            @relation("UserConnections")
+  connectedBy            Connection[]            @relation("ConnectedUsers")
+  messages               Message[]               @relation("MessageSender")
+  notifications          Notification[]
+  notificationPreferences NotificationPreferences?
+  events                 EventAttendance[]
+  auditLogs              AuditLog[]
 
   @@index([email])
   @@index([city, state])
@@ -389,6 +390,54 @@ model Notification {
   @@index([isRead])
   @@index([createdAt])
   @@map("notifications")
+}
+
+model NotificationPreferences {
+  preferenceId           String   @id @default(uuid()) @map("id")
+  userId                 String   @unique
+
+  // Email Notifications
+  emailEnabled           Boolean  @default(true)
+  emailSwapRequest       Boolean  @default(true)
+  emailSwapAccepted      Boolean  @default(true)
+  emailSwapRejected      Boolean  @default(false)
+  emailSwapCompleted     Boolean  @default(true)
+  emailMessage           Boolean  @default(true)
+  emailBadgeEarned       Boolean  @default(true)
+  emailEventReminder     Boolean  @default(true)
+  emailSystem            Boolean  @default(true)
+
+  // In-App Notifications
+  inAppEnabled           Boolean  @default(true)
+  inAppSwapRequest       Boolean  @default(true)
+  inAppSwapAccepted      Boolean  @default(true)
+  inAppSwapRejected      Boolean  @default(true)
+  inAppSwapCompleted     Boolean  @default(true)
+  inAppMessage           Boolean  @default(true)
+  inAppBadgeEarned       Boolean  @default(true)
+  inAppEventReminder     Boolean  @default(true)
+  inAppSystem            Boolean  @default(true)
+
+  // Email Digest
+  digestEnabled          Boolean  @default(false)
+  digestFrequency        DigestFrequency @default(WEEKLY)
+  digestDay              Int?     // Day of week for weekly (0=Sunday, 6=Saturday)
+  digestHour             Int      @default(9) // Hour of day (0-23)
+  lastDigestSent         DateTime?
+
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  user                   User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("notification_preferences")
+}
+
+enum DigestFrequency {
+  DAILY
+  WEEKLY
+  MONTHLY
 }
 
 model AuditLog {

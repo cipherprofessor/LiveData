@@ -22,8 +22,11 @@ import {
   X,
   Moon,
   Sun,
+  Star,
+  StarOff,
 } from 'lucide-react';
 import { useThemeStore } from '../stores/themeStore';
+import { useFavoritesStore } from '../stores/favoritesStore';
 
 interface NavItem {
   name: string;
@@ -42,6 +45,7 @@ export default function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const { theme, toggleTheme } = useThemeStore();
+  const { favorites, toggleFavorite, isFavorite } = useFavoritesStore();
 
   const navSections: NavSection[] = [
     {
@@ -116,6 +120,41 @@ export default function Sidebar() {
 
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-6">
+        {/* Favorites Section */}
+        {favorites.length > 0 && (
+          <div>
+            {!isCollapsed && (
+              <h3 className="px-3 mb-2 text-xs font-semibold text-yellow-600 dark:text-yellow-500 uppercase tracking-wider flex items-center">
+                <Star className="h-3 w-3 mr-1 fill-current" />
+                Favorites
+              </h3>
+            )}
+            {isCollapsed && <div className="border-t border-yellow-300 dark:border-yellow-700 my-2" />}
+            <div className="space-y-1">
+              {favorites.map((fav) => {
+                const active = isActive(fav.path);
+                return (
+                  <Link
+                    key={fav.path}
+                    to={fav.path}
+                    onClick={() => setIsMobileOpen(false)}
+                    className={`flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                      active
+                        ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border-l-4 border-yellow-600 dark:border-yellow-500'
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                    } ${isCollapsed ? 'justify-center' : ''}`}
+                    title={isCollapsed ? fav.name : ''}
+                  >
+                    <Star className={`${isCollapsed ? '' : 'mr-3'} h-5 w-5 flex-shrink-0 fill-current text-yellow-500`} />
+                    {!isCollapsed && <span className="flex-1">{fav.name}</span>}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Main Navigation Sections */}
         {navSections.map((section) => (
           <div key={section.title}>
             {!isCollapsed && (
@@ -128,28 +167,46 @@ export default function Sidebar() {
               {section.items.map((item) => {
                 const Icon = item.icon;
                 const active = isActive(item.path);
+                const favorite = isFavorite(item.path);
                 return (
-                  <Link
-                    key={item.path}
-                    to={item.path}
-                    onClick={() => setIsMobileOpen(false)}
-                    className={`flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                      active
-                        ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border-l-4 border-blue-700 dark:border-blue-500'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white'
-                    } ${isCollapsed ? 'justify-center' : ''}`}
-                    title={isCollapsed ? item.name : ''}
-                  >
-                    <Icon className={`${isCollapsed ? '' : 'mr-3'} h-5 w-5 flex-shrink-0`} />
+                  <div key={item.path} className="group relative">
+                    <Link
+                      to={item.path}
+                      onClick={() => setIsMobileOpen(false)}
+                      className={`flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                        active
+                          ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border-l-4 border-blue-700 dark:border-blue-500'
+                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white'
+                      } ${isCollapsed ? 'justify-center' : ''}`}
+                      title={isCollapsed ? item.name : ''}
+                    >
+                      <Icon className={`${isCollapsed ? '' : 'mr-3'} h-5 w-5 flex-shrink-0`} />
+                      {!isCollapsed && (
+                        <span className="flex-1">{item.name}</span>
+                      )}
+                      {!isCollapsed && item.badge && (
+                        <span className="ml-auto inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
+                          {item.badge}
+                        </span>
+                      )}
+                    </Link>
                     {!isCollapsed && (
-                      <span className="flex-1">{item.name}</span>
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          toggleFavorite({ name: item.name, path: item.path, icon: 'star' });
+                        }}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                        title={favorite ? 'Remove from favorites' : 'Add to favorites'}
+                      >
+                        {favorite ? (
+                          <Star className="h-4 w-4 fill-current text-yellow-500" />
+                        ) : (
+                          <StarOff className="h-4 w-4 text-gray-400 hover:text-yellow-500" />
+                        )}
+                      </button>
                     )}
-                    {!isCollapsed && item.badge && (
-                      <span className="ml-auto inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
-                        {item.badge}
-                      </span>
-                    )}
-                  </Link>
+                  </div>
                 );
               })}
             </div>

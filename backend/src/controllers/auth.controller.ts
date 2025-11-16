@@ -276,12 +276,22 @@ router.post(
         });
       }
 
-      // Check if email is verified
-      if (!user.emailVerified) {
+      // Check if email is verified (only if required by environment configuration)
+      const requireEmailVerification = process.env.REQUIRE_EMAIL_VERIFICATION === 'true';
+
+      if (requireEmailVerification && !user.emailVerified) {
         // Resend OTP
         const otp = otpService.generateOTP();
         otpService.storeOTP(email, otp);
-        await emailService.sendOTPEmail(email, otp);
+
+        // Try to send email if email service is configured
+        try {
+          await emailService.sendOTPEmail(email, otp);
+        } catch (error) {
+          // If email service not configured, log OTP to console for development
+          console.log(`📧 EMAIL (DEV MODE): OTP for ${email}: ${otp}`);
+          logger.warn('Email service not configured. OTP logged to console.');
+        }
 
         return res.status(403).json({
           success: false,

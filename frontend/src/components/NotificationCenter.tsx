@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import notificationService from '../services/notifications.service';
 
 interface Notification {
   notificationId: string;
@@ -58,17 +59,16 @@ export default function NotificationCenter({
   const loadNotifications = async () => {
     try {
       setIsLoading(true);
-      // TODO: Replace with actual API call
-      // const response = await api.get('/notifications');
-      // setNotifications(response.data.data.notifications);
-      // setUnreadCount(response.data.data.unreadCount);
-
-      // Mock data for now
-      setNotifications([]);
-      setUnreadCount(0);
+      const response = await notificationService.getNotifications();
+      if (response.success) {
+        setNotifications(response.data.notifications || []);
+        setUnreadCount(response.data.unreadCount || 0);
+      }
     } catch (error) {
       console.error('Failed to load notifications:', error);
-      toast.error('Failed to load notifications');
+      // Don't show error toast on load failure - just show empty state
+      setNotifications([]);
+      setUnreadCount(0);
     } finally {
       setIsLoading(false);
     }
@@ -76,8 +76,7 @@ export default function NotificationCenter({
 
   const markAsRead = async (notificationId: string) => {
     try {
-      // TODO: API call to mark as read
-      // await api.put(`/notifications/${notificationId}/read`);
+      await notificationService.markAsRead(notificationId);
 
       setNotifications((prev) =>
         prev.map((n) =>
@@ -95,8 +94,7 @@ export default function NotificationCenter({
 
   const markAllAsRead = async () => {
     try {
-      // TODO: API call to mark all as read
-      // await api.put('/notifications/mark-all-read');
+      await notificationService.markAllAsRead();
 
       setNotifications((prev) =>
         prev.map((n) => ({
@@ -115,8 +113,7 @@ export default function NotificationCenter({
 
   const deleteNotification = async (notificationId: string) => {
     try {
-      // TODO: API call to delete
-      // await api.delete(`/notifications/${notificationId}`);
+      await notificationService.deleteNotification(notificationId);
 
       setNotifications((prev) =>
         prev.filter((n) => n.notificationId !== notificationId)

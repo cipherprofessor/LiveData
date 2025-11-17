@@ -4,6 +4,8 @@ import { Toaster } from 'react-hot-toast';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoadingFallback from './components/LoadingFallback';
 import Layout from './components/Layout';
+import ErrorBoundary from './components/ErrorBoundary';
+import NetworkStatus from './components/NetworkStatus';
 
 // Lazy load pages for code splitting
 const HomePage = lazy(() => import('./pages/HomePage'));
@@ -27,7 +29,8 @@ const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 function App() {
   return (
-    <>
+    <ErrorBoundary>
+      <NetworkStatus />
       <Toaster position="top-right" />
       <Suspense fallback={<LoadingFallback fullScreen />}>
         <Routes>
@@ -202,7 +205,7 @@ function App() {
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
-    </>
+    </ErrorBoundary>
   );
 }
 

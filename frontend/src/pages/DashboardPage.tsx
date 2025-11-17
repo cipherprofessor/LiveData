@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import Layout from '../components/Layout';
 import { useAuthStore } from '../stores/authStore';
 import swapsService from '../services/swaps.service';
 import matchingService from '../services/matching.service';
@@ -37,8 +36,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <Layout>
-      <div>
+    <div>
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">
             Welcome back, {user?.name}!
@@ -169,6 +167,6 @@ export default function DashboardPage() {
           </Link>
         </div>
       </div>
-    </Layout>
+    </div>
   );
 }

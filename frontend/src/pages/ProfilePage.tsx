@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useAuthStore } from '../stores/authStore';
-import Layout from '../components/Layout';
 import userService from '../services/user.service';
 import toast from 'react-hot-toast';
 
@@ -35,8 +34,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <Layout>
-      <div className="max-w-3xl mx-auto">
+    <div className="max-w-3xl mx-auto">
         <div className="bg-white shadow-sm rounded-lg p-6">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold text-gray-900">My Profile</h1>
@@ -162,6 +160,6 @@ export default function ProfilePage() {
           </form>
         </div>
       </div>
-    </Layout>
+    </div>
   );
 }

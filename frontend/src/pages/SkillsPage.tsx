@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import Layout from '../components/Layout';
 import skillsService from '../services/skills.service';
 import toast from 'react-hot-toast';
 import type { UserSkill, Skill } from '../services/skills.service';
@@ -48,17 +47,14 @@ export default function SkillsPage() {
 
   if (isLoading) {
     return (
-      <Layout>
-        <div className="text-center py-12">
-          <p className="text-gray-600">Loading skills...</p>
-        </div>
-      </Layout>
+      <div className="text-center py-12">
+        <p className="text-gray-600">Loading skills...</p>
+      </div>
     );
   }
 
   return (
-    <Layout>
-      <div>
+    <div>
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900">My Skills</h1>
         </div>
@@ -174,6 +170,6 @@ export default function SkillsPage() {
           </div>
         </div>
       </div>
-    </Layout>
+    </div>
   );
 }

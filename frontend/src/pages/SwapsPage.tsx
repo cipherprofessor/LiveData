@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import Layout from '../components/Layout';
 import swapsService from '../services/swaps.service';
 import toast from 'react-hot-toast';
 import type { Swap } from '../services/swaps.service';
@@ -76,17 +75,14 @@ export default function SwapsPage() {
 
   if (isLoading) {
     return (
-      <Layout>
-        <div className="text-center py-12">
-          <p className="text-gray-600">Loading swaps...</p>
-        </div>
-      </Layout>
+      <div className="text-center py-12">
+        <p className="text-gray-600">Loading swaps...</p>
+      </div>
     );
   }
 
   return (
-    <Layout>
-      <div>
+    <div>
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900">My Swaps</h1>
 
@@ -200,6 +196,6 @@ export default function SwapsPage() {
           </div>
         )}
       </div>
-    </Layout>
+    </div>
   );
 }

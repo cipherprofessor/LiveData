@@ -170,6 +170,6 @@ export default function SkillsPage() {
           </div>
         </div>
       </div>
-    </div>
+   
   );
 }

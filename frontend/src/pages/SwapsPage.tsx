@@ -196,6 +196,6 @@ export default function SwapsPage() {
           </div>
         )}
       </div>
-    </div>
+   
   );
 }

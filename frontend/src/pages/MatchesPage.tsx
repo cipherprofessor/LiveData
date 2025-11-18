@@ -123,6 +123,6 @@ export default function MatchesPage() {
           </div>
         )}
       </div>
-    </div>
+    
   );
 }

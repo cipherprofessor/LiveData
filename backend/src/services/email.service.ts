@@ -42,7 +42,8 @@ class EmailService {
           pass: testAccount.pass,
         },
       });
-      logger.info(`📧 Email test account created: ${testAccount.user}`);
+        logger.info(`📧 Email test account created: ${testAccount.user}, ${testAccount.pass}`);
+        
     } catch (error) {
       logger.error('Failed to create email test account:', error);
     }
